@@ -7,6 +7,6 @@ Repository for CS1555 Project
 * Uday Atragada - uda1@pitt.edu
 
 ## Due Dates:
-* Phase 1: DB Design - 8:00PM, Oct 21, 2022
+* Phase 1: DB Design - 8:00PM, Nov 2, 2022
 * Phase 2: DB Implementation & Interface - 8:00PM, Dec 1, 2022
 * Phase 3: Driver & Optimizations - 8:00PM, Dec 10, 2022
