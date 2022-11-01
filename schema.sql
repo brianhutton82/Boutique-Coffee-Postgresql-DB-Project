@@ -25,7 +25,7 @@ create table Customer (
 	customerMiddleName char(1),
 	birthDay char(2),
 	birthMonth char(3),
-	phoneNumber varhchar(16),
+	phoneNumber varchar(16),
 	phoneType phone_type,
 	constraint customerPK primary key(customerID)
 );
