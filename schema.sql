@@ -2,18 +2,23 @@
 -- still need to map binary M:N relationship types to a relation
 -- also still needs constraints and need to specify assumptions
 
-drop table Customer cascade constraints;
-drop table Store cascade constraints;
-drop table Coffee cascade constraints;
-drop table Purchase cascade constraints;
-drop table Promotion cascade constraints;
-drop table LoyaltyLevel cascade constraints;
+drop table Customer cascade constraint;
+drop table Store cascade constraint;
+drop table Coffee cascade constraint;
+drop table Purchase cascade constraint;
+drop table Promotion cascade constraint;
+drop table LoyaltyLevel cascade constraint;
+drop domain store_type cascade constraint;
+drop domain phone_type cascade constraint;
+drop domain loyalty_level cascade constraint;
+
+
 
 create domain store_type as varchar(7)
 check(value in ('sitting', 'kiosk'));
 
 create domain phone_type as varchar(6)
-check(value in ('home', 'mobile', 'work', 'other'));
+check(value in ('Home', 'Mobile', 'Work', 'Other'));
 
 create domain loyalty_level as varchar(10)
 check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
@@ -75,6 +80,8 @@ create table LoyaltyLevel (
 	contraint loyaltyFK foreign key(customerID) references Customer(customerID)
 );
 
+
+
 -- MAPPING BINARY 1:N RELATIONSHIP TYPES:
 -- ---------------------------------------
 -- for each regular binary relationship type R
@@ -97,3 +104,24 @@ create table LoyaltyLevel (
 -- represent the participating entity types
 -- their combination will form the primary
 -- key of S
+
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (1,'Klara','Marquez','s',22,6,8102515651,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (2,'Abbi','Levine','s',25,2,3986732244,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (3,'Amos','Cervantes','v',10,5,1422231013,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (4,'Alanah','Whittington','z',3,1,7933470003,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (5,'Abbey','Whitley','d',13,5,6738218129,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (6,'Ehsan','Robbins','t',11,12,7729148702,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (7,'Alexis','Stewart','c',19,8,2037953296,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (8,'Bo','Frame','g',25,9,5125765103,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (9,'Bridie','Rice','z',4,3,7610457547,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (10,'Junayd','Shah','i',23,6,1563396212,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (11,'Violet','Morgan','i',27,3,2230713723,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (12,'Mitchell','Ewing','m',4,5,2210634228,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (13,'Everly','Myers','n',30,11,8041600088,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (14,'Arabella','Scott','k',28,7,6032834936,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (15,'David','Shepherd','b',29,1,1806106956,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (16,'Sumayyah','Thorne','k',8,11,9634640402,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (17,'Manahil','Jarvis','d',1,7,4963194063,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (18,'Maxime','Oneil','s',19,12,4438005836,'Work');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (19,'Troy','Farrell','k',20,11,5479364713,'Home');
+INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (20,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
