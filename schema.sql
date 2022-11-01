@@ -1,6 +1,6 @@
--- Brian Hutton: just started this, feel free to edit it
--- still need to map binary M:N relationship types to a relation
--- also still needs constraints and need to specify assumptions
+-- Schema for CS1555 BoutiqueCoffee Project
+-- Brian Hutton
+-- Uday Ar
 
 drop table Customer cascade constraints;
 drop table Store cascade constraints;
@@ -116,4 +116,10 @@ create table buysCoffee (
 	constraint buysCoffeePK primary key (purchaseID, coffeeID),
 	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID),
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
+);
+
+create table offersCoffee (
+	coffeeID int not null,
+	storeID int not null,
+	constraint offersCoffee
 );
