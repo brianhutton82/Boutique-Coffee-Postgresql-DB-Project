@@ -2,17 +2,15 @@
 -- Brian Hutton
 -- Uday Ar
 
-drop table Customer cascade constraint;
-drop table Store cascade constraint;
-drop table Coffee cascade constraint;
-drop table Purchase cascade constraint;
-drop table Promotion cascade constraint;
-drop table LoyaltyLevel cascade constraint;
-drop domain store_type cascade constraint;
-drop domain phone_type cascade constraint;
-drop domain loyalty_level cascade constraint;
-
-
+drop table Customer cascade;
+drop table Store cascade;
+drop table Coffee cascade;
+drop table Purchase cascade;
+drop table Promotion cascade;
+drop table LoyaltyLevel cascade;
+drop domain store_type cascade;
+drop domain phone_type cascade;
+drop domain loyalty_level cascade;
 
 create domain store_type as varchar(7)
 check(value in ('sitting', 'kiosk'));
@@ -83,7 +81,7 @@ create table LoyaltyLevel (
 	levelName loyalty_level,
 	boostFactor float,
 	customerID int not null,
-	contraint loyaltyFK foreign key(customerID) references Customer(customerID)
+	constraint loyaltyFK foreign key(customerID) references Customer(customerID)
 );
 
 
@@ -124,8 +122,8 @@ create table hasPromotion (
 	promotionID int not null,
 	storeID int,
 	constraint hasPromotionPK primary key(promotionID, storeID),
-	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionID),
-	constraint storeIDFK foreign key(storeID) references Store(storeID)
+	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber),
+	constraint storeIDFK foreign key(storeID) references Store(storeNumber)
 );
 
 
@@ -133,7 +131,7 @@ create table promotionFor (
 	promotionID int not null,
 	coffeeID int not null,
 	constraint promotionForPK primary key(promotionID, coffeeID),
-	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionID),
+	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber),
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
 );
 
@@ -151,3 +149,5 @@ create table offersCoffee (
 	storeID int not null,
 	constraint offersCoffee
 );
+
+select * from Customer;
