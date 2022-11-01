@@ -51,12 +51,18 @@ create table Coffee (
 	constraint coffeePK primary key(coffeeID)
 );
 
+-- Since Customer:Purchase is a binary 1:N relationship
+-- the primary key of of Customer should be included as
+-- a foreign key in Purchase
+
 create table Purchase (
 	purchaseID int not null,
+	customerID int not null,
 	purchaseTime time,
 	redeemPortion ?,
 	purchasePortion ?,
-	constraint purchasePK primary key(purchaseID)
+	constraint purchasePK primary key(purchaseID),
+	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID)
 );
 
 create table Promotion (
@@ -75,18 +81,6 @@ create table LoyaltyLevel (
 	contraint loyaltyFK foreign key(customerID) references Customer(customerID)
 );
 
--- MAPPING BINARY 1:N RELATIONSHIP TYPES:
--- ---------------------------------------
--- for each regular binary relationship type R
--- identify the relation S that represents the
--- participating entity type at the N-side of
--- the relationship type
--- Include as foreign key in S the primary key
--- of the relation T that represents the
--- other entity type participating in R
--- each instance on the N-side is related
--- to at most one entity instance on the 1-side
--- of the relationship type
 
 -- MAPPING OF BINARY M:N RELATIONSHIP TYPES:
 -- -----------------------------------------
@@ -97,3 +91,29 @@ create table LoyaltyLevel (
 -- represent the participating entity types
 -- their combination will form the primary
 -- key of S
+
+create table hasPromotion (
+	promotionID int not null,
+	storeID int,
+	constraint hasPromotionPK primary key(promotionID, storeID),
+	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionID),
+	constraint storeIDFK foreign key(storeID) references Store(storeID)
+);
+
+
+create table promotionFor (
+	promotionID int not null,
+	coffeeID int not null,
+	constraint promotionForPK primary key(promotionID, coffeeID),
+	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionID),
+	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
+);
+
+
+create table buysCoffee (
+	purchaseID int not null,
+	coffeeID int not null,
+	constraint buysCoffeePK primary key (purchaseID, coffeeID),
+	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID),
+	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
+);
