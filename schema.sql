@@ -186,10 +186,10 @@ insert into Coffee values(1010, 'Cold brew', 'Cold brewing, also called cold wat
 insert into Coffee values(1011, 'Turkish', 'Turkish coffee is prepared by immersing the coffee grounds in water and heating until it just boils.', 'Turkey', 12,4.95,2.475,24.75);
 
 -- 50 purchases
-INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5000,9,2002,'6:00:00',1004,4.95,0);
-INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5001,4,2002,'6:10:00',1000,0,3.95);
-INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5002,8,2001,'6:20:00',1003,4.95,0);
-INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5003,10,2002,'6:30:00',1011,4.95,0);
+INSERT INTO Purchase VALUES (5000,9,2002,'6:00:00',1004,4.95,0);
+INSERT INTO Purchase VALUES (5001,4,2002,'6:10:00',1000,0,3.95);
+INSERT INTO Purchase VALUES (5002,8,2001,'6:20:00',1003,4.95,0);
+INSERT INTO Purchase VALUES (5003,10,2002,'6:30:00',1011,4.95,0);
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5004,3,2002,'6:40:00',1006,0,2);
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5005,4,2002,'6:50:00',1009,3.49,0);
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5006,7,2002,'7:00:00',1011,4.95,0);
