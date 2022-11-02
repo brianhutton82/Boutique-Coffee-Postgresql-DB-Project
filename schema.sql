@@ -1,20 +1,16 @@
 -- Schema for CS1555 BoutiqueCoffee Project
 -- Brian Hutton
-<<<<<<< HEAD
--- Uday Ar
-=======
 -- Uday Atragada
->>>>>>> e15f70a3b977c8559bc8159a326419cf3f324c3a
 
-drop table Customer cascade;
-drop table Store cascade;
-drop table Coffee cascade;
-drop table Purchase cascade;
-drop table Promotion cascade;
-drop table LoyaltyLevel cascade;
-drop domain store_type cascade;
-drop domain phone_type cascade;
-drop domain loyalty_level cascade;
+drop table if exists Customer cascade;
+drop table if exists Store cascade;
+drop table if exists Coffee cascade;
+drop table if exists Purchase cascade;
+drop table if exists Promotion cascade;
+drop table if exists LoyaltyLevel cascade;
+drop domain if exists store_type cascade;
+drop domain if exists phone_type cascade;
+drop domain if exists loyalty_level cascade;
 
 create domain store_type as varchar(7)
 check(value in ('sitting', 'kiosk'));
@@ -26,54 +22,55 @@ create domain loyalty_level as varchar(10)
 check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
 create table Customer (
-	customerID int not null,
-	customerFirstName varchar(20),
-	customerLastName varchar(20),
+	customerID integer not null,
+	customerFirstName varchar(20) not null,
+	customerLastName varchar(20) not null,
 	customerMiddleName char(1),
 	birthDay char(2),
 	birthMonth char(3),
 	phoneNumber varchar(16),
 	phoneType phone_type,
-	constraint customerPK primary key(customerID)
+	totalPointsEarned real default 0,
+	constraint customerPK primary key(customerID) 
 );
 
 create table Store (
-	storeNumber int not null,
-	storeName varchar(50),
+	storeNumber integer not null,
+	storeName varchar(50) not null,
 	storeType store_type,
-	gpsLat float,
-	gpsLong float,
+	gpsLat real not null,
+	gpsLong real not null,
 	constraint storePK primary key(storeNumber)
 );
 
 create table Coffee (
-	coffeeID int not null,
-	coffeeName varchar(50),
+	coffeeID integer not null,
+	coffeeName varchar(50) not null,
 	description varchar(250),
 	countryOfOrigin varchar(60),
-	intensity int check(intensity >= 1 and intensity <= 12),
-	price float,
-	rewardPoints float,
-	redeemPoints float,
+	intensity integer check(intensity >= 1 and intensity <= 12),
+	price real not null,
+	rewardPoints real,
+	redeemPoints real,
 	constraint coffeePK primary key(coffeeID)
 );
 
--- Since Customer:Purchase is a binary 1:N relationship
--- the primary key of of Customer should be included as
--- a foreign key in Purchase
+/* Since Customer:Purchase is a binary 1:N relationship
+   the primary key of of Customer should be included as
+   a foreign key in Purchase */
 
 create table Purchase (
-	purchaseID int not null,
-	customerID int not null,
+	purchaseID integer not null,
+	customerID integer not null,
 	purchaseTime time,
-	redeemPortion ?,
-	purchasePortion ?,
+	redeemPortion real,
+	purchasePortion real,
 	constraint purchasePK primary key(purchaseID),
 	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID)
 );
 
 create table Promotion (
-	promotionNumber int not null,
+	promotionNumber integer not null,
 	promotionName varchar(50),
 	promotionStartDate date,
 	promotionEndDate date,
@@ -82,9 +79,10 @@ create table Promotion (
 
 -- LoyaltyLevel is a weak entity type because it does not have its own primary key
 create table LoyaltyLevel (
+	customerID integer not null,
 	levelName loyalty_level,
-	boostFactor float,
-	customerID int not null,
+	boostFactor real,
+	constraint loyaltyPK primary key(customerID),
 	constraint loyaltyFK foreign key(customerID) references Customer(customerID)
 );
 
@@ -100,8 +98,8 @@ create table LoyaltyLevel (
 
 
 create table hasPromotion (
-	promotionID int not null,
-	storeID int,
+	promotionID integer not null,
+	storeID integer,
 	constraint hasPromotionPK primary key(promotionID, storeID),
 	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber),
 	constraint storeIDFK foreign key(storeID) references Store(storeNumber)
@@ -109,8 +107,8 @@ create table hasPromotion (
 
 
 create table promotionFor (
-	promotionID int not null,
-	coffeeID int not null,
+	promotionID integer not null,
+	coffeeID integer not null,
 	constraint promotionForPK primary key(promotionID, coffeeID),
 	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber),
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
@@ -118,22 +116,22 @@ create table promotionFor (
 
 
 create table buysCoffee (
-	purchaseID int not null,
-	coffeeID int not null,
+	purchaseID integer not null,
+	coffeeID integer not null,
 	constraint buysCoffeePK primary key (purchaseID, coffeeID),
 	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID),
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
 );
 
 create table offersCoffee (
-	coffeeID int not null,
-	storeID int not null,
-	constraint offersCoffee
+	coffeeID integer not null,
+	storeID integer not null,
+	constraint offersCoffeePK primary key (coffeeID, storeID),
+	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID),
+	constraint storeIDFK foreign key (storeID) references Store(storeID)
 );
 
-<<<<<<< HEAD
-select * from Customer;
-=======
+
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (1,'Klara','Marquez','s',22,6,8102515651,'Home');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (2,'Abbi','Levine','s',25,2,3986732244,'Work');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (3,'Amos','Cervantes','v',10,5,1422231013,'Home');
@@ -154,7 +152,3 @@ INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddl
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (18,'Maxime','Oneil','s',19,12,4438005836,'Work');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (19,'Troy','Farrell','k',20,11,5479364713,'Home');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (20,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
-
-
-SELECT * from Customer;
->>>>>>> e15f70a3b977c8559bc8159a326419cf3f324c3a
