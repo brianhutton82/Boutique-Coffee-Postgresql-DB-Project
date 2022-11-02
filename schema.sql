@@ -12,6 +12,7 @@ drop domain if exists store_type cascade;
 drop domain if exists phone_type cascade;
 drop domain if exists loyalty_level cascade;
 drop table if exists hasPromotion cascade;
+drop table if exists promotionFor cascade;
 drop table if exists offersCoffee cascade;
 
 create domain store_type as varchar(7)
@@ -103,6 +104,15 @@ create table hasPromotion (
 	constraint hasPromotionPK primary key(promotionID, storeID),
 	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber) on delete cascade,
 	constraint storeIDFK foreign key(storeID) references Store(storeNumber) on delete cascade
+);
+
+-- coffee has to exist for promotion to exist, so delete entry if coffee is deleted
+create table promotionFor (
+	promotionID integer not null,
+	coffeeID integer not null,
+	constraint promotionForPK primary key(promotionID, coffeeID),
+	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber) on delete cascade,
+	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
 -- if store or coffee is deleted, delete entry
