@@ -36,7 +36,7 @@ create table Customer (
 
 create table Store (
 	storeNumber integer not null,
-	storeName varchar(50) not null,
+	storeName varchar(50) unique not null,
 	storeType store_type,
 	gpsLat real not null,
 	gpsLong real not null,
@@ -49,7 +49,7 @@ create table Coffee (
 	description varchar(250),
 	countryOfOrigin varchar(60),
 	intensity integer check(intensity >= 1 and intensity <= 12),
-	price real not null,
+	price real not null check(price > 0),
 	rewardPoints real,
 	redeemPoints real,
 	constraint coffeePK primary key(coffeeID)
@@ -59,6 +59,8 @@ create table Coffee (
    the primary key of of Customer should be included as
    a foreign key in Purchase */
 
+-- delete purchase history if customer is deleted
+
 create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
@@ -66,7 +68,7 @@ create table Purchase (
 	redeemPortion real,
 	purchasePortion real,
 	constraint purchasePK primary key(purchaseID),
-	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID)
+	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade
 );
 
 create table Promotion (
@@ -78,12 +80,13 @@ create table Promotion (
 );
 
 -- LoyaltyLevel is a weak entity type because it does not have its own primary key
+-- if customer is deleted, remove information about loyalty level
 create table LoyaltyLevel (
 	customerID integer not null,
 	levelName loyalty_level,
 	boostFactor real,
 	constraint loyaltyPK primary key(customerID),
-	constraint loyaltyFK foreign key(customerID) references Customer(customerID)
+	constraint loyaltyFK foreign key(customerID) references Customer(customerID) on delete cascade
 );
 
 -- MAPPING OF BINARY M:N RELATIONSHIP TYPES:
@@ -96,39 +99,41 @@ create table LoyaltyLevel (
 -- their combination will form the primary
 -- key of S
 
-
+-- if store is deleted, promo should be removed as well
+-- if there is no promotion, then there should be no entry in this table
 create table hasPromotion (
 	promotionID integer not null,
 	storeID integer,
 	constraint hasPromotionPK primary key(promotionID, storeID),
-	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber),
-	constraint storeIDFK foreign key(storeID) references Store(storeNumber)
+	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber) on delete cascade,
+	constraint storeIDFK foreign key(storeID) references Store(storeNumber) on delete cascade
 );
 
-
+-- coffee has to exist for promotion to exist, so delete entry if coffee is deleted
 create table promotionFor (
 	promotionID integer not null,
 	coffeeID integer not null,
 	constraint promotionForPK primary key(promotionID, coffeeID),
-	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber),
-	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
+	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber) on delete cascade,
+	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
-
+-- delete entry if either coffee or purchase is deleted
 create table buysCoffee (
 	purchaseID integer not null,
 	coffeeID integer not null,
 	constraint buysCoffeePK primary key (purchaseID, coffeeID),
-	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID),
-	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID)
+	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID) on delete cascade,
+	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
+-- if store or coffee is deleted, delete entry
 create table offersCoffee (
 	coffeeID integer not null,
 	storeID integer not null,
 	constraint offersCoffeePK primary key (coffeeID, storeID),
-	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID),
-	constraint storeIDFK foreign key (storeID) references Store(storeID)
+	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID) on delete cascade,
+	constraint storeIDFK foreign key (storeID) references Store(storeID) on delete cascade
 );
 
 
