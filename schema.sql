@@ -11,6 +11,10 @@ drop table if exists LoyaltyLevel cascade;
 drop domain if exists store_type cascade;
 drop domain if exists phone_type cascade;
 drop domain if exists loyalty_level cascade;
+drop table if exists hasPromotion cascade;
+drop table if exists promotionFor cascade;
+drop table if exists buysCoffee cascade;
+drop table if exists offersCoffee cascade;
 
 create domain store_type as varchar(7)
 check(value in ('sitting', 'kiosk'));
@@ -133,7 +137,7 @@ create table offersCoffee (
 	storeID integer not null,
 	constraint offersCoffeePK primary key (coffeeID, storeID),
 	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID) on delete cascade,
-	constraint storeIDFK foreign key (storeID) references Store(storeID) on delete cascade
+	constraint storeIDFK foreign key (storeID) references Store(storeNumber) on delete cascade
 );
 
 
@@ -157,3 +161,54 @@ INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddl
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (18,'Maxime','Oneil','s',19,12,4438005836,'Work');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (19,'Troy','Farrell','k',20,11,5479364713,'Home');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (20,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
+
+insert into Purchase values(5000,4,'6:00:00',1,0);
+insert into Purchase values(5001,7,'6:10:00',1,0);
+insert into Purchase values(5002,12,'6:20:00',1,0);
+insert into Purchase values(5003,1,'6:30:00',1,0);
+insert into Purchase values(5004,10,'6:40:00',1,0);
+insert into Purchase values(5005,4,'6:50:00',1,0);
+insert into Purchase values(5006,5,'7:00:00',1,0);
+insert into Purchase values(5007,3,'7:10:00',1,0);
+insert into Purchase values(5008,2,'7:20:00',1,0);
+insert into Purchase values(5009,3,'7:30:00',1,0);
+insert into Purchase values(5010,2,'7:40:00',1,0);
+insert into Purchase values(5011,10,'7:50:00',1,0);
+insert into Purchase values(5012,5,'8:00:00',1,0);
+insert into Purchase values(5013,4,'8:10:00',1,0);
+insert into Purchase values(5014,3,'8:20:00',1,0);
+insert into Purchase values(5015,12,'8:30:00',1,0);
+insert into Purchase values(5016,2,'8:40:00',1,0);
+insert into Purchase values(5017,11,'8:50:00',1,0);
+insert into Purchase values(5018,1,'9:00:00',1,0);
+insert into Purchase values(5019,9,'9:10:00',1,0);
+insert into Purchase values(5020,7,'9:20:00',1,0);
+insert into Purchase values(5021,8,'9:30:00',1,0);
+insert into Purchase values(5022,1,'9:40:00',1,0);
+insert into Purchase values(5023,7,'9:50:00',1,0);
+insert into Purchase values(5024,8,'10:00:00',1,0);
+insert into Purchase values(025,1,'10:10:00',1,0);
+insert into Purchase values(5026,9,'10:20:00',1,0);
+insert into Purchase values(5027,3,'10:30:00',1,0);
+insert into Purchase values(5028,4,'10:40:00',1,0);
+insert into Purchase values(5029,4,'10:50:00',1,0);
+insert into Purchase values(5030,12,'11:00:00',1,0);
+insert into Purchase values(5031,6,'11:10:00',1,0);
+insert into Purchase values(5032,7,'11:20:00',1,0);
+insert into Purchase values(5033,3,'11:30:00',1,0);
+insert into Purchase values(5034,2,'11:40:00',1,0);
+insert into Purchase values(5035,2,'11:50:00',1,0);
+insert into Purchase values(5036,6,'12:00:00',1,0);
+insert into Purchase values(5037,1,'12:10:00',1,0);
+insert into Purchase values(5038,7,'12:20:00',1,0);
+insert into Purchase values(5039,8,'12:30:00',1,0);
+insert into Purchase values(5040,10,'12:40:00',1,0);
+insert into Purchase values(5041,10,'12:50:00',1,0);
+insert into Purchase values(5042,8,'13:00:00',1,0);
+insert into Purchase values(5043,10,'13:10:00',1,0);
+insert into Purchase values(5044,3,'13:20:00',1,0);
+insert into Purchase values(5045,3,'13:30:00',1,0);
+insert into Purchase values(5046,6,'13:40:00',1,0);
+insert into Purchase values(5047,10,'13:50:00',1,0);
+insert into Purchase values(5048,2,'14:00:00',1,0);
+insert into Purchase values(5049,5,'14:10:00',1,0);
