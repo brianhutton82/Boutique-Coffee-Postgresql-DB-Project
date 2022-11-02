@@ -68,11 +68,15 @@ create table Coffee (
 create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
+	storeNumber integer not null,
 	purchaseTime time,
+	coffeeID integer not null,
 	redeemPortion real,
 	purchasePortion real,
 	constraint purchasePK primary key(purchaseID),
-	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade
+	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade,
+	constraint purchaseStoreFK foreign key(storeNumber) references Store(storeNumber) on delete cascade,
+	constraint purchaseCoffeeFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
 create table Promotion (
@@ -162,6 +166,25 @@ INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddl
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (19,'Troy','Farrell','k',20,11,5479364713,'Home');
 INSERT INTO Customer(customerID,customerFirstName,customerLastName,customerMiddleName,birthDay,birthMonth,phoneNumber,phoneType) VALUES (20,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
 
+-- 3 stores
+insert into Store values(2000, 'Udays Cafe', 'sitting', 40.440624, -79.995888);
+insert into Store values(2001, 'Brians Cafe', 'kiosk', 50.440624, -79.995888);
+insert into Store values(2002, 'Bres Cafe', 'sitting', 60.440624, -79.995888);
+
+-- 12 Coffees
+insert into Coffee values(1000, 'Café cubano', 'Cuban tradition is to drink coffee strong and sweet', 'Cuba', 1,3.95,1.975,19.75);
+insert into Coffee values(1001, 'Caffè crema', 'Cuban tradition is to drink coffee strong and sweet', 'Italy', 2,3.49,1.745,17.45);
+insert into Coffee values(1002, 'Ristretto', 'Ristretto is traditionally a short shot of espresso made with the normal amount of ground coffee but extracted with about half the amount of water.', 'Italy', 3,3,1.5,15);
+insert into Coffee values(1003, 'café mocha', 'Like a latte, it is typically one third espresso and two thirds steamed milk, but a portion of chocolate is added, typically in the form of a chocolate syrup, although other vending systems use instant chocolate powder.', 'Italy', 4,4.95,2.475,24.75);
+insert into Coffee values(1004, 'Freddo cappuccino', 'Freddo cappuccino is another variation of the original cappuccino and is as popular as the freddo espresso', 'Italy', 5,4.95,2.475,24.75);
+insert into Coffee values(1005, 'Flat white', 'A flat white is an espresso with microfoam (steamed milk with small, fine bubbles and a glossy or velvety consistency).', 'Italy', 6,4.49,2.245,22.45);
+insert into Coffee values(1006, 'Caffè americano', 'An americano is prepared by adding hot water to espresso, giving a similar strength to but different flavor from brewed coffee.', 'America', 7,2,1,10);
+insert into Coffee values(1007, 'Latte', 'Coffee beverage of Italian origin made with espresso and steamed milk.', 'Italy', 8,4.5,2.25,22.5);
+insert into Coffee values(1008, 'Doppio', 'Doppio is a double shot, served in a demitasse cup.', 'Italy', 9,3.95,1.975,19.75);
+insert into Coffee values(1009, 'French press', 'A French press requires a coarser grind of coffee than a drip brew coffee filter, as finer grounds will seep through the press filter and into the coffee.', 'France', 10,3.49,1.745,17.45);
+insert into Coffee values(1010, 'Cold brew', 'Cold brewing, also called cold water extraction or cold pressing, is the process of steeping coffee grounds in water at cool temperatures for an extended period.', 'America', 11,3.95,1.975,19.75);
+insert into Coffee values(1011, 'Turkish', 'Turkish coffee is prepared by immersing the coffee grounds in water and heating until it just boils.', 'Turkey', 12,4.95,2.475,24.75);
+
 -- 50 purchases
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5000,9,2002,'6:00:00',1004,4.95,0);
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5001,4,2002,'6:10:00',1000,0,3.95);
@@ -214,28 +237,10 @@ INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,pur
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5048,6,2002,'14:00:00',1011,4.95,0);
 INSERT INTO Purchase(PurchaseID,customerID,storeNumber,purchaseTime,coffeeID,purchasePortion,redeemPortion) VALUES (5049,1,2002,'14:10:00',1009,3.49,0);
 
--- 3 stores
-insert into Store values(2000, 'Udays Cafe', 'sitting', 40.440624, -79.995888);
-insert into Store values(2001, 'Brians Cafe', 'kiosk', 50.440624, -79.995888);
-insert into Store values(2002, 'Bres Cafe', 'sitting', 60.440624, -79.995888);
 
 -- 3 promotions
 insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20');
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
-
--- 12 Coffees
-insert into Coffee values(1000, 'Café cubano', 'Cuban tradition is to drink coffee strong and sweet', 'Cuba', 1,3.95,1.975,19.75);
-insert into Coffee values(1001, 'Caffè crema', 'Cuban tradition is to drink coffee strong and sweet', 'Italy', 2,3.49,1.745,17.45);
-insert into Coffee values(1002, 'Ristretto', 'Ristretto is traditionally a short shot of espresso made with the normal amount of ground coffee but extracted with about half the amount of water.', 'Italy', 3,3,1.5,15);
-insert into Coffee values(1003, 'café mocha', 'Like a latte, it is typically one third espresso and two thirds steamed milk, but a portion of chocolate is added, typically in the form of a chocolate syrup, although other vending systems use instant chocolate powder.', 'Italy', 4,4.95,2.475,24.75);
-insert into Coffee values(1004, 'Freddo cappuccino', 'Freddo cappuccino is another variation of the original cappuccino and is as popular as the freddo espresso', 'Italy', 5,4.95,2.475,24.75);
-insert into Coffee values(1005, 'Flat white', 'A flat white is an espresso with microfoam (steamed milk with small, fine bubbles and a glossy or velvety consistency).', 'Italy', 6,4.49,2.245,22.45);
-insert into Coffee values(1006, 'Caffè americano', 'An americano is prepared by adding hot water to espresso, giving a similar strength to but different flavor from brewed coffee.', 'America', 7,2,1,10);
-insert into Coffee values(1007, 'Latte', 'Coffee beverage of Italian origin made with espresso and steamed milk.', 'Italy', 8,4.5,2.25,22.5);
-insert into Coffee values(1008, 'Doppio', 'Doppio is a double shot, served in a demitasse cup.', 'Italy', 9,3.95,1.975,19.75);
-insert into Coffee values(1009, 'French press', 'A French press requires a coarser grind of coffee than a drip brew coffee filter, as finer grounds will seep through the press filter and into the coffee.', 'France', 10,3.49,1.745,17.45);
-insert into Coffee values(1010, 'Cold brew', 'Cold brewing, also called cold water extraction or cold pressing, is the process of steeping coffee grounds in water at cool temperatures for an extended period.', 'America', 11,3.95,1.975,19.75);
-insert into Coffee values(1011, 'Turkish', 'Turkish coffee is prepared by immersing the coffee grounds in water and heating until it just boils.', 'Turkey', 12,4.95,2.475,24.75);
 
 SELECT * FROM Purchase;
