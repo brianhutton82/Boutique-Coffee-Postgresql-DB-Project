@@ -1,3 +1,8 @@
+-- Schema for CS1555 BoutiqueCoffee Project
+-- Brian Hutton
+-- Uday Atragada
+
+
 -- 20 customers
 INSERT INTO Customer VALUES (1,'Klara','Marquez','s',22,6,8102515651,'Home');
 INSERT INTO Customer VALUES (2,'Abbi','Levine','s',25,2,3986732244,'Work');
