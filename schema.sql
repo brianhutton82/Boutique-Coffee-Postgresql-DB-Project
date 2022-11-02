@@ -12,8 +12,6 @@ drop domain if exists store_type cascade;
 drop domain if exists phone_type cascade;
 drop domain if exists loyalty_level cascade;
 drop table if exists hasPromotion cascade;
-drop table if exists promotionFor cascade;
-drop table if exists buysCoffee cascade;
 drop table if exists offersCoffee cascade;
 
 create domain store_type as varchar(7)
@@ -97,16 +95,6 @@ create table LoyaltyLevel (
 	constraint loyaltyFK foreign key(customerID) references Customer(customerID) on delete cascade
 );
 
--- MAPPING OF BINARY M:N RELATIONSHIP TYPES:
--- -----------------------------------------
--- For each binary M:N relationship type R
--- create a new relation S to represent R
--- Include as foreign key attributes in S
--- the primary keys of the relations that
--- represent the participating entity types
--- their combination will form the primary
--- key of S
-
 -- if store is deleted, promo should be removed as well
 -- if there is no promotion, then there should be no entry in this table
 create table hasPromotion (
@@ -115,24 +103,6 @@ create table hasPromotion (
 	constraint hasPromotionPK primary key(promotionID, storeID),
 	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber) on delete cascade,
 	constraint storeIDFK foreign key(storeID) references Store(storeNumber) on delete cascade
-);
-
--- coffee has to exist for promotion to exist, so delete entry if coffee is deleted
-create table promotionFor (
-	promotionID integer not null,
-	coffeeID integer not null,
-	constraint promotionForPK primary key(promotionID, coffeeID),
-	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber) on delete cascade,
-	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
-);
-
--- delete entry if either coffee or purchase is deleted
-create table buysCoffee (
-	purchaseID integer not null,
-	coffeeID integer not null,
-	constraint buysCoffeePK primary key (purchaseID, coffeeID),
-	constraint purchaseIDFK foreign key(purchaseID) references Purchase(purchaseID) on delete cascade,
-	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
 -- if store or coffee is deleted, delete entry
