@@ -34,7 +34,8 @@ create table Customer (
 	phoneNumber varchar(16),
 	phoneType phone_type,
 	totalPointsEarned real default 0,
-	constraint customerPK primary key(customerID) 
+	constraint customerPK primary key(customerID),
+	-- needs foreign key to LoyaltyLevel
 );
 
 create table Store (
@@ -53,8 +54,8 @@ create table Coffee (
 	countryOfOrigin varchar(60),
 	intensity integer check(intensity >= 1 and intensity <= 12),
 	price real not null check(price > 0),
-	rewardPoints real,
-	redeemPoints real,
+	rewardPoints real check(rewardPoints >= 0),
+	redeemPoints real check(redeemPoints >= 0),
 	constraint coffeePK primary key(coffeeID)
 );
 
@@ -71,7 +72,7 @@ create table Purchase (
 	purchaseTime time,
 	coffeeID integer not null,
 	redeemPortion real,
-	purchasePortion real,
+	purchasePortion real check(purchasePortion >= 0),
 	constraint purchasePK primary key(purchaseID),
 	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade,
 	constraint purchaseStoreFK foreign key(storeNumber) references Store(storeNumber) on delete cascade,
@@ -81,8 +82,8 @@ create table Purchase (
 create table Promotion (
 	promotionNumber integer not null,
 	promotionName varchar(50),
-	promotionStartDate date,
-	promotionEndDate date,
+	promotionStartDate date check(promotionStartDate < promotionEndDate),
+	promotionEndDate date check(promotionEndDate > promotionStartDate),
 	constraint promotionPK primary key(promotionNumber)
 );
 
@@ -91,7 +92,7 @@ create table Promotion (
 create table LoyaltyLevel (
 	customerID integer not null,
 	levelName loyalty_level,
-	boostFactor real,
+	boostFactor real check(boostFactor >= 0),
 	constraint loyaltyPK primary key(customerID),
 	constraint loyaltyFK foreign key(customerID) references Customer(customerID) on delete cascade
 );
