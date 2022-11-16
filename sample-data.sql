@@ -1,29 +1,28 @@
--- Schema for CS1555 BoutiqueCoffee Project
 -- Brian Hutton
 -- Uday Atragada
 
-
 -- 20 customers
-INSERT INTO Customer VALUES (1,'Klara','Marquez','s',22,6,8102515651,'Home');
-INSERT INTO Customer VALUES (2,'Abbi','Levine','s',25,2,3986732244,'Work');
-INSERT INTO Customer VALUES (3,'Amos','Cervantes','v',10,5,1422231013,'Home');
-INSERT INTO Customer VALUES (4,'Alanah','Whittington','z',3,1,7933470003,'Work');
-INSERT INTO Customer VALUES (5,'Abbey','Whitley','d',13,5,6738218129,'Home');
-INSERT INTO Customer VALUES (6,'Ehsan','Robbins','t',11,12,7729148702,'Work');
-INSERT INTO Customer VALUES (7,'Alexis','Stewart','c',19,8,2037953296,'Home');
-INSERT INTO Customer VALUES (8,'Bo','Frame','g',25,9,5125765103,'Work');
-INSERT INTO Customer VALUES (9,'Bridie','Rice','z',4,3,7610457547,'Home');
-INSERT INTO Customer VALUES (10,'Junayd','Shah','i',23,6,1563396212,'Work');
-INSERT INTO Customer VALUES (11,'Violet','Morgan','i',27,3,2230713723,'Home');
-INSERT INTO Customer VALUES (12,'Mitchell','Ewing','m',4,5,2210634228,'Work');
-INSERT INTO Customer VALUES (13,'Everly','Myers','n',30,11,8041600088,'Home');
-INSERT INTO Customer VALUES (14,'Arabella','Scott','k',28,7,6032834936,'Work');
-INSERT INTO Customer VALUES (15,'David','Shepherd','b',29,1,1806106956,'Home');
-INSERT INTO Customer VALUES (16,'Sumayyah','Thorne','k',8,11,9634640402,'Work');
-INSERT INTO Customer VALUES (17,'Manahil','Jarvis','d',1,7,4963194063,'Home');
-INSERT INTO Customer VALUES (18,'Maxime','Oneil','s',19,12,4438005836,'Work');
-INSERT INTO Customer VALUES (19,'Troy','Farrell','k',20,11,5479364713,'Home');
-INSERT INTO Customer VALUES (20,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
+-- updated Customer insert statements to include LoyaltyID
+INSERT INTO Customer VALUES (1,null,'Klara','Marquez','s',22,6,8102515651,'Home');
+INSERT INTO Customer VALUES (2,null,'Abbi','Levine','s',25,2,3986732244,'Work');
+INSERT INTO Customer VALUES (3,null,'Amos','Cervantes','v',10,5,1422231013,'Home');
+INSERT INTO Customer VALUES (4,null,'Alanah','Whittington','z',3,1,7933470003,'Work');
+INSERT INTO Customer VALUES (5,null,'Abbey','Whitley','d',13,5,6738218129,'Home');
+INSERT INTO Customer VALUES (6,null,'Ehsan','Robbins','t',11,12,7729148702,'Work');
+INSERT INTO Customer VALUES (7,null,'Alexis','Stewart','c',19,8,2037953296,'Home');
+INSERT INTO Customer VALUES (8,null,'Bo','Frame','g',25,9,5125765103,'Work');
+INSERT INTO Customer VALUES (9,null,'Bridie','Rice','z',4,3,7610457547,'Home');
+INSERT INTO Customer VALUES (10,null,'Junayd','Shah','i',23,6,1563396212,'Work');
+INSERT INTO Customer VALUES (11,null,'Violet','Morgan','i',27,3,2230713723,'Home');
+INSERT INTO Customer VALUES (12,null,'Mitchell','Ewing','m',4,5,2210634228,'Work');
+INSERT INTO Customer VALUES (13,null,'Everly','Myers','n',30,11,8041600088,'Home');
+INSERT INTO Customer VALUES (14,null,'Arabella','Scott','k',28,7,6032834936,'Work');
+INSERT INTO Customer VALUES (15,null,'David','Shepherd','b',29,1,1806106956,'Home');
+INSERT INTO Customer VALUES (16,null,'Sumayyah','Thorne','k',8,11,9634640402,'Work');
+INSERT INTO Customer VALUES (17,null,'Manahil','Jarvis','d',1,7,4963194063,'Home');
+INSERT INTO Customer VALUES (18,null,'Maxime','Oneil','s',19,12,4438005836,'Work');
+INSERT INTO Customer VALUES (19,null,'Troy','Farrell','k',20,11,5479364713,'Home');
+INSERT INTO Customer VALUES (20,null,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
 
 -- 3 stores
 insert into Store values(2000, 'Udays Cafe', 'sitting', 40.440624, -79.995888);
@@ -102,4 +101,4 @@ insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20')
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
-SELECT * FROM Purchase;
+select * from Customer;

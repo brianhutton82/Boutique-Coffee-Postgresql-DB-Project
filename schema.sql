@@ -24,8 +24,19 @@ check(value in ('Home', 'Mobile', 'Work', 'Other'));
 create domain loyalty_level as varchar(10)
 check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
+-- moved foreign key to Customer table
+-- added check constraint to ensure boostFactor is non-negative
+create table LoyaltyLevel (
+	loyaltyLevelID integer not null,
+	levelName loyalty_level,
+	boostFactor real check(boostFactor >= 0),
+	constraint loyaltyPK primary key(loyaltyLevelID)
+);
+
+-- added foreign key to loyalty level table
 create table Customer (
 	customerID integer not null,
+	loyaltyID integer,
 	customerFirstName varchar(20) not null,
 	customerLastName varchar(20) not null,
 	customerMiddleName char(1),
@@ -35,7 +46,7 @@ create table Customer (
 	phoneType phone_type,
 	totalPointsEarned real default 0,
 	constraint customerPK primary key(customerID),
-	-- needs foreign key to LoyaltyLevel
+	constraint loyaltyFK foreign key(loyaltyID) references LoyaltyLevel(loyaltyLevelID) on delete set null
 );
 
 create table Store (
@@ -47,6 +58,7 @@ create table Store (
 	constraint storePK primary key(storeNumber)
 );
 
+-- added check constraint to ensure rewardPoints & redeemPoints are non-negative
 create table Coffee (
 	coffeeID integer not null,
 	coffeeName varchar(50) not null,
@@ -59,12 +71,7 @@ create table Coffee (
 	constraint coffeePK primary key(coffeeID)
 );
 
-/* Since Customer:Purchase is a binary 1:N relationship
-   the primary key of of Customer should be included as
-   a foreign key in Purchase */
-
--- delete purchase history if customer is deleted
-
+-- added check constraint to ensure redeemPortion & purchasePortion are non-negative
 create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
@@ -79,26 +86,16 @@ create table Purchase (
 	constraint purchaseCoffeeFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
+-- removed not null requirement from promotionStartDate & promotionEndDate
+-- added check constraint to ensure end_date is not before start_date & vice-versa
 create table Promotion (
 	promotionNumber integer not null,
 	promotionName varchar(50),
-	promotionStartDate date check(promotionStartDate < promotionEndDate),
-	promotionEndDate date check(promotionEndDate > promotionStartDate),
+	promotionStartDate date check(promotionStartDate <= promotionEndDate),
+	promotionEndDate date check(promotionEndDate >= promotionStartDate),
 	constraint promotionPK primary key(promotionNumber)
 );
 
--- LoyaltyLevel is a weak entity type because it does not have its own primary key
--- if customer is deleted, remove information about loyalty level
-create table LoyaltyLevel (
-	customerID integer not null,
-	levelName loyalty_level,
-	boostFactor real check(boostFactor >= 0),
-	constraint loyaltyPK primary key(customerID),
-	constraint loyaltyFK foreign key(customerID) references Customer(customerID) on delete cascade
-);
-
--- if store is deleted, promo should be removed as well
--- if there is no promotion, then there should be no entry in this table
 create table hasPromotion (
 	promotionID integer not null,
 	storeID integer,
@@ -107,7 +104,6 @@ create table hasPromotion (
 	constraint storeIDFK foreign key(storeID) references Store(storeNumber) on delete cascade
 );
 
--- coffee has to exist for promotion to exist, so delete entry if coffee is deleted
 create table promotionFor (
 	promotionID integer not null,
 	coffeeID integer not null,
@@ -116,7 +112,6 @@ create table promotionFor (
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
--- if store or coffee is deleted, delete entry
 create table offersCoffee (
 	coffeeID integer not null,
 	storeID integer not null,
