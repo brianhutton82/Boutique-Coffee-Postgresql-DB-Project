@@ -14,6 +14,7 @@ drop domain if exists loyalty_level cascade;
 drop table if exists hasPromotion cascade;
 drop table if exists promotionFor cascade;
 drop table if exists offersCoffee cascade;
+drop table if exists Clock cascade;
 
 create domain store_type as varchar(7)
 check(value in ('sitting', 'kiosk'));
@@ -23,32 +24,6 @@ check(value in ('Home', 'Mobile', 'Work', 'Other'));
 
 create domain loyalty_level as varchar(10)
 check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
-
--- function used to update customers reward points on their birthday
--- this function will be used in a trigger
-create or replace function updateRewardPointsOnBirthday(points real)
-returns real
-as
-$$
-begin
-	return ((points * 0.1) + points);
-end;
-$$ language plpgsql;
-
--- this function will be used in a trigger
-create or replace function isCustomersBirthday(birthMonth char(3), birthDay char(2))
-returns boolean
-as
-$$
-declare
-currentDay char(2);
-currentMonth char(3);
-begin
-	currentDay := cast(extract(day from current_timestamp) as char(2));
-	currentMonth := to_char(current_timestamp, 'mon');
-	return (currentDay=birthDay and currentMonth=birthMonth);
-end;
-$$ language plpgsql;
 
 -- moved foreign key to Customer table
 -- added check constraint to ensure boostFactor is non-negative
@@ -147,3 +122,11 @@ create table offersCoffee (
 	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID) on delete cascade,
 	constraint storeIDFK foreign key (storeID) references Store(storeNumber) on delete cascade
 );
+
+create table Clock (
+	p_date date,
+	constraint pDatePK primary key(p_date)
+);
+
+-- initialize Clock date to e Sep 1, 2022
+insert into Clock values ('Sep 1, 2022');
