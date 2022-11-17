@@ -95,7 +95,6 @@ INSERT INTO Purchase VALUES (5047,3,2002,'13:50:00',1010,3.95,0);
 INSERT INTO Purchase VALUES (5048,6,2002,'14:00:00',1011,4.95,0);
 INSERT INTO Purchase VALUES (5049,1,2002,'14:10:00',1009,3.49,0);
 
-
 -- 3 promotions
 insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20');
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
