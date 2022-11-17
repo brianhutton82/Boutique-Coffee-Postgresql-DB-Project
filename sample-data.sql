@@ -101,4 +101,4 @@ insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20')
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
-select * from Customer;
+select Purchase.purchaseID, Coffee.coffeeName, Customer.customerFirstName from Purchase natural join Customer natural join Coffee;

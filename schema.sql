@@ -72,18 +72,20 @@ create table Coffee (
 );
 
 -- added check constraint to ensure redeemPortion & purchasePortion are non-negative
+-- added constraint so that customer cannot both use reward points and use cash in Purchase, only one or the other, not both
 create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
 	storeNumber integer not null,
 	purchaseTime time,
 	coffeeID integer not null,
-	redeemPortion real,
+	redeemPortion real check(redeemPortion >= 0),
 	purchasePortion real check(purchasePortion >= 0),
 	constraint purchasePK primary key(purchaseID),
 	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade,
 	constraint purchaseStoreFK foreign key(storeNumber) references Store(storeNumber) on delete cascade,
-	constraint purchaseCoffeeFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
+	constraint purchaseCoffeeFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade,
+	constraint redeemOrPurchase check ((redeemPortion > 0 and purchasePortion > 0) = false)
 );
 
 -- removed not null requirement from promotionStartDate & promotionEndDate
