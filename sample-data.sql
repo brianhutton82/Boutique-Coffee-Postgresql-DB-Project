@@ -109,3 +109,4 @@ INSERT INTO Customer VALUES (22,7000,'Reward','Points','w',2,1,7003350306,'Work'
 INSERT INTO Purchase VALUES (5050,22,2002,'14:10:00',1009,0,3.49);
 
 select * from Store;
+select * from Coffee;
