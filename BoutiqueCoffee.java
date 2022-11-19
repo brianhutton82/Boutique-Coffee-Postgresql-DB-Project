@@ -156,20 +156,67 @@ public class BoutiqueCoffee {
 		return coffeeID;
 	}
 
+	/*
+		Task #9: Add a new customer
+		• Ask the user to provide the required fields for creating a new customer: first name, last name, middle initial, day of birth, month of birth, phone number and phone type.
+		• The new user’s loyalty level should be set to ‘basic’ since no reward points have been earned yet.
+		• Display the customer ID as a confirmationof successfully adding the new customer in the database.
+	*/
+	public int addNewCustomer(String customerFirstName, String customerLastName, char customerMiddleName, String birthDay, String birthMonth, String phoneNumber, String phoneType){
+		int customerID = 0;
+		try{
+			st = connection.createStatement();
+
+			// generate a new customer ID
+			String getAllCustomerIDs = "select customerID from Customer;";
+			ResultSet allCustomerIDs = st.executeQuery(getAllCustomerIDs);
+			// get last customerID
+			while(allCustomerIDs.next()){
+				int currentCustomerID = allCustomerIDs.getInt("customerID");
+				if(currentCustomerID > customerID){
+					customerID = currentCustomerID;
+				}
+			}
+			customerID += 1; // new customerID
+			allCustomerIDs.close();
+
+			// if all values provided are legit, insert this new customer
+			String insertCustomer ="insert into Customer values(" + customerID + ", 'basic', '" + customerFirstName + "', '" + customerLastName + "', '" + customerMiddleName + "', '" + birthDay + "', '" + birthMonth + "', '" + phoneNumber + "', '" + phoneType + "');";
+			st.executeUpdate(insertCustomer);
+
+			// check to make sure customer was inserted successfully
+			String checkInsertWorked = "select customerID from Customer where customerID = " + customerID + ";";
+			ResultSet insertedCustomerIDs = st.executeQuery(checkInsertWorked);
+			int resultCustomerID = -1;
+			while(insertedCustomerIDs.next()){
+				resultCustomerID = insertedCustomerIDs.getInt("customerID");
+			}
+			if(resultCustomerID != customerID){
+				customerID = -1;
+			}
+			insertedCustomerIDs.close();
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Unable to insert Customer!***\n");
+			e.printStackTrace();
+		}
+		return customerID;
+	}
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		BoutiqueCoffee bc = new BoutiqueCoffee();
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
 				case "insertStore":
-					System.out.print("Store name?: ");
+					System.out.print("Store name: ");
 					String storeName = kbd.next();
-					System.out.print("Store type?: ");
+					System.out.print("Store type: ");
 					String storeType = kbd.next();
 					System.out.print("GPS Longitude: ");
 					float gpsLong = kbd.nextFloat();
@@ -205,6 +252,28 @@ public class BoutiqueCoffee {
 						System.out.println("\n\tFailed to add Coffee " + coffeeName + " to Coffee table!");
 					} else {
 						System.out.println("\n\tSuccessfully added coffee with name: " + coffeeName + " and ID: " + coffeeID + "!");
+					}
+					break;
+				case "insertCustomer":
+					System.out.print("first name: ");
+					String customerFirstName = kbd.next();
+					System.out.print("last name: ");
+					String customerLastName = kbd.next();
+					System.out.print("middle initial: ");
+					char customerMiddleName = kbd.next().charAt(0);
+					System.out.print("day of birth (number): ");
+					String birthDay = kbd.next();
+					System.out.print("month of birth ('Mon' format): ");
+					String birthMonth = kbd.next();
+					System.out.print("phone number (one string without hyphens): ");
+					String phoneNumber = kbd.next();
+					System.out.print("phone type: ");
+					String phoneType = kbd.next();
+					int customerID = bc.addNewCustomer(customerFirstName, customerLastName, customerMiddleName, birthDay, birthMonth, phoneNumber, phoneType);
+					if (customerID <= 0){
+						System.out.println("\n\t Failed to add customer: " + customerFirstName + ", to Customer table!\n");
+					} else {
+						System.out.println("\n\tSuccessfully added customer with name: " + customerFirstName + ", and ID: " + customerID +", to Customer table!");
 					}
 					break;
 				case "quit":

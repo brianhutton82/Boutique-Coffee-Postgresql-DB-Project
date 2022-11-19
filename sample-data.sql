@@ -1,28 +1,35 @@
 -- Brian Hutton
 -- Uday Atragada
 
+insert into LoyaltyLevel values('basic', 1);
+insert into LoyaltyLevel values('bronze',2);
+insert into LoyaltyLevel values('silver',3);
+insert into LoyaltyLevel values('gold',4);
+insert into LoyaltyLevel values('platinum',5);
+insert into LoyaltyLevel values('diamond', 6);
+
 -- 20 customers
 -- updated Customer insert statements to include LoyaltyID
-INSERT INTO Customer VALUES (1,null,'Klara','Marquez','s',22,6,8102515651,'Home');
-INSERT INTO Customer VALUES (2,null,'Abbi','Levine','s',25,2,3986732244,'Work');
-INSERT INTO Customer VALUES (3,null,'Amos','Cervantes','v',10,5,1422231013,'Home');
-INSERT INTO Customer VALUES (4,null,'Alanah','Whittington','z',3,1,7933470003,'Work');
-INSERT INTO Customer VALUES (5,null,'Abbey','Whitley','d',13,5,6738218129,'Home');
-INSERT INTO Customer VALUES (6,null,'Ehsan','Robbins','t',11,12,7729148702,'Work');
-INSERT INTO Customer VALUES (7,null,'Alexis','Stewart','c',19,8,2037953296,'Home');
-INSERT INTO Customer VALUES (8,null,'Bo','Frame','g',25,9,5125765103,'Work');
-INSERT INTO Customer VALUES (9,null,'Bridie','Rice','z',4,3,7610457547,'Home');
-INSERT INTO Customer VALUES (10,null,'Junayd','Shah','i',23,6,1563396212,'Work');
-INSERT INTO Customer VALUES (11,null,'Violet','Morgan','i',27,3,2230713723,'Home');
-INSERT INTO Customer VALUES (12,null,'Mitchell','Ewing','m',4,5,2210634228,'Work');
-INSERT INTO Customer VALUES (13,null,'Everly','Myers','n',30,11,8041600088,'Home');
-INSERT INTO Customer VALUES (14,null,'Arabella','Scott','k',28,7,6032834936,'Work');
-INSERT INTO Customer VALUES (15,null,'David','Shepherd','b',29,1,1806106956,'Home');
-INSERT INTO Customer VALUES (16,null,'Sumayyah','Thorne','k',8,11,9634640402,'Work');
-INSERT INTO Customer VALUES (17,null,'Manahil','Jarvis','d',1,7,4963194063,'Home');
-INSERT INTO Customer VALUES (18,null,'Maxime','Oneil','s',19,12,4438005836,'Work');
-INSERT INTO Customer VALUES (19,null,'Troy','Farrell','k',20,11,5479364713,'Home');
-INSERT INTO Customer VALUES (20,null,'Mikaeel','Kendall','w',2,1,7003350306,'Work');
+INSERT INTO Customer VALUES (1,'basic','Klara','Marquez','s',22,6,8102515651,'Home');
+INSERT INTO Customer VALUES (2,'basic','Abbi','Levine','s',25,2,3986732244,'Work');
+INSERT INTO Customer VALUES (3,'basic','Amos','Cervantes','v',10,5,1422231013,'Home');
+INSERT INTO Customer VALUES (4,'basic','Alanah','Whittington','z',3,1,7933470003,'Work');
+INSERT INTO Customer VALUES (5,'basic','Abbey','Whitley','d',13,5,6738218129,'Home');
+INSERT INTO Customer VALUES (6,'basic','Ehsan','Robbins','t',11,12,7729148702,'Work');
+INSERT INTO Customer VALUES (7,'basic','Alexis','Stewart','c',19,8,2037953296,'Home');
+INSERT INTO Customer VALUES (8,'basic','Bo','Frame','g',25,9,5125765103,'Work');
+INSERT INTO Customer VALUES (9,'basic','Bridie','Rice','z',4,3,7610457547,'Home');
+INSERT INTO Customer VALUES (10,'basic','Junayd','Shah','i',23,6,1563396212,'Work');
+INSERT INTO Customer VALUES (11,'basic','Violet','Morgan','i',27,3,2230713723,'Home');
+INSERT INTO Customer VALUES (12,'basic','Mitchell','Ewing','m',4,5,2210634228,'Work');
+INSERT INTO Customer VALUES (13,'basic','Everly','Myers','n',30,11,8041600088,'Home');
+INSERT INTO Customer VALUES (14,'basic','Arabella','Scott','k',28,7,6032834936,'Work');
+INSERT INTO Customer VALUES (15,'basic','David','Shepherd','b',29,1,1806106956,'Home');
+INSERT INTO Customer VALUES (16,'basic','Sumayyah','Thorne','k',8,11,9634640402,'Work');
+INSERT INTO Customer VALUES (17,'basic','Manahil','Jarvis','d',1,7,4963194063,'Home');
+INSERT INTO Customer VALUES (18,'basic','Maxime','Oneil','s',19,12,4438005836,'Work');
+INSERT INTO Customer VALUES (19,'basic','Troy','Farrell','k',20,11,5479364713,'Home');
+INSERT INTO Customer VALUES (20,'basic','Mikaeel','Kendall','w',2,1,7003350306,'Work');
 
 -- 3 stores
 insert into Store values(2000, 'Udays Cafe', 'sitting', 40.440624, -79.995888);
@@ -100,13 +107,8 @@ insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20')
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
--- test for customer birthday trigger
-insert into Customer values(21,null,'Davie','Navy','w','18','Nov',7003350306,'Work', 20);
-
 -- need to add to assumptions that birthDay & Month for customer will be of the form 'Mon' '00'
-insert into LoyaltyLevel values(7000, 'gold', 0.5);
-INSERT INTO Customer VALUES (22,7000,'Reward','Points','w',2,1,7003350306,'Work');
-INSERT INTO Purchase VALUES (5050,22,2002,'14:10:00',1009,0,3.49);
 
 select * from Store;
 select * from Coffee;
+select * from Customer;

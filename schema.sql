@@ -28,16 +28,15 @@ check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 -- moved foreign key to Customer table
 -- added check constraint to ensure boostFactor is non-negative
 create table LoyaltyLevel (
-	loyaltyLevelID integer not null,
 	levelName loyalty_level,
 	boostFactor real check(boostFactor >= 0),
-	constraint loyaltyPK primary key(loyaltyLevelID)
+	constraint loyaltyPK primary key(levelName)
 );
 
 -- added foreign key to loyalty level table
 create table Customer (
 	customerID integer not null,
-	loyaltyID integer,
+    loyaltyLevel loyalty_level,
 	customerFirstName varchar(20) not null,
 	customerLastName varchar(20) not null,
 	customerMiddleName char(1),
@@ -47,7 +46,7 @@ create table Customer (
 	phoneType phone_type,
 	totalPointsEarned real default 0,
 	constraint customerPK primary key(customerID),
-	constraint loyaltyFK foreign key(loyaltyID) references LoyaltyLevel(loyaltyLevelID) on delete set null
+	constraint loyaltyFK foreign key(loyaltyLevel) references LoyaltyLevel(levelName) on delete set null
 );
 
 create table Store (
