@@ -39,7 +39,7 @@ insert into Coffee values(1005, 'Flat white', 'A flat white is an espresso with 
 insert into Coffee values(1006, 'Caffè americano', 'An americano is prepared by adding hot water to espresso, giving a similar strength to but different flavor from brewed coffee.', 'America', 7,2,1,10);
 insert into Coffee values(1007, 'Latte', 'Coffee beverage of Italian origin made with espresso and steamed milk.', 'Italy', 8,4.5,2.25,22.5);
 insert into Coffee values(1008, 'Doppio', 'Doppio is a double shot, served in a demitasse cup.', 'Italy', 9,3.95,1.975,19.75);
-insert into Coffee values(1009, 'French press', 'A French press requires a coarser grind of coffee than a drip brew coffee filter, as finer grounds will seep through the press filter and into the coffee.', 'France', 10,3.49,1.745,17.45);
+insert into Coffee values(1009, 'French press', 'A French press requires a coarser grind of coffee than a drip brew coffee filter, as finer grounds will seep through the press filter and into the coffee.', 'France', 10,3.49,5,17.45);
 insert into Coffee values(1010, 'Cold brew', 'Cold brewing, also called cold water extraction or cold pressing, is the process of steeping coffee grounds in water at cool temperatures for an extended period.', 'America', 11,3.95,1.975,19.75);
 insert into Coffee values(1011, 'Turkish', 'Turkish coffee is prepared by immersing the coffee grounds in water and heating until it just boils.', 'Turkey', 12,4.95,2.475,24.75);
 
@@ -101,9 +101,11 @@ insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15')
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
 -- test for customer birthday trigger
-insert into Customer values(21,null,'Davie','Navy','w','17','Nov',7003350306,'Work', 20);
-select * from Customer where customerfirstname='Davie';
-update Clock set p_date='Nov 11, 2022';
-select * from Customer where customerfirstname='Davie'
+insert into Customer values(21,null,'Davie','Navy','w','18','Nov',7003350306,'Work', 20);
 
 -- need to add to assumptions that birthDay & Month for customer will be of the form 'Mon' '00'
+insert into LoyaltyLevel values(7000, 'gold', 0.5);
+INSERT INTO Customer VALUES (22,7000,'Reward','Points','w',2,1,7003350306,'Work');
+INSERT INTO Purchase VALUES (5050,22,2002,'14:10:00',1009,0,3.49);
+
+select * from Store;

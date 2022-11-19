@@ -20,3 +20,5 @@ create trigger clockUpdate
 after insert or update on Clock
 for each row
 execute procedure updatePointsOnBirthday();
+
+-- add triggers for checking promotion on coffee
