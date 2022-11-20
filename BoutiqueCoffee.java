@@ -1,6 +1,7 @@
 
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Date;
 import java.sql.*;
 
 public class BoutiqueCoffee {
@@ -204,12 +205,83 @@ public class BoutiqueCoffee {
 		return customerID;
 	}
 
+	/*
+		Task #12: Add a purchase.
+		• Ask the user to supply the customer ID, store ID, time of purchase, purchased coffee ID(s), purchase quantitie(s), and redeem quantitie(s).
+		• If the purchase uses points, the purchase should fail if the customer does not have enough.
+		• Display the purchase ID of this purchase to as a confirmation of successfully completing the purchase in the database.
+		Purchase (int purchaseID, int customerID, int storeNumber, time PurchaseTime, int coffeeID, float redeemPortion, float purchasePortion)
+	*/
+	public int addPurchase(int customerID, int storeNumber, String purchaseTime, int coffeeID, float redeemPortion, float purchasePortion){
+		int purchaseID = 0;
+		boolean canPurchase = false;
+		try {
+			st = connection.createStatement();
+
+			// if customer is redeeming, check if they have enough points for coffee with coffeeID
+			if(redeemPortion > 0){
+
+				// first get this coffees required redeem points
+				String getCoffeeRedeemPoints = "select reedeemPoints from Coffee where coffeeID = " + coffeeID + ";";
+				ResultSet coffeeRedeemPoints = st.executeQuery(getCoffeeRedeemPoints);
+				int coffeePoints = 0;
+				while(coffeeRedeemPoints.next()){
+					coffeePoints = coffeeRedeemPoints.getInt("redeemPoints");
+				}
+				coffeeRedeemPoints.close();
+
+				// next get customers awarded points
+				String getCustomerPoints = "select totalPointsEarned from Customer where customerID = " + customerID + ";";
+				ResultSet customerPoints = st.executeQuery(getCustomerPoints);
+				float customerRewardPoints = 0;
+				while(customerPoints.next()){
+					customerRewardPoints = customerPoints.getFloat("totalPointsEarned");
+				}
+				customerPoints.close();
+
+				// if customer has enough points for the coffee then they can redeem it
+				if(customerRewardPoints >= coffeePoints){
+					canPurchase = true;
+				}
+			}  else if(purchasePortion > 0 && redeemPortion == 0){
+					canPurchase = true;
+
+			} else {
+				System.out.println("\n***Customer can use either redeem points or purchase coffee, not both!***\n");
+			}
+
+			if(canPurchase){
+				// compute new purchase ID
+				String getPurchaseIDs = "select purchaseID from Purchase;";
+				ResultSet allPurchaseIDs = st.executeQuery(getPurchaseIDs);
+				while(allPurchaseIDs.next()){
+					purchaseID = allPurchaseIDs.getInt("purchaseID");
+				}
+				purchaseID += 1;
+				allPurchaseIDs.close();
+				if(purchaseID > 0){
+					// insert this purchase
+					// (purchaseID, customerID, storeNumber, PurchaseTime, coffeeID, redeemPortion, purchasePortion)
+					String insertPurchase = "insert into Purchase values(" + purchaseID + ", " + customerID + ", " + storeNumber + ", '" + purchaseTime + "', " + coffeeID + ", " + redeemPortion + ", " + purchasePortion + ");";
+					st.executeUpdate(insertPurchase);
+				}
+			}
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Unable to insert purchase!***\n");
+			e.printStackTrace();
+		}
+		return purchaseID;
+	}
+
+
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		BoutiqueCoffee bc = new BoutiqueCoffee();
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -274,6 +346,26 @@ public class BoutiqueCoffee {
 						System.out.println("\n\t Failed to add customer: " + customerFirstName + ", to Customer table!\n");
 					} else {
 						System.out.println("\n\tSuccessfully added customer with name: " + customerFirstName + ", and ID: " + customerID +", to Customer table!");
+					}
+					break;
+				case "insertPurchase":
+					System.out.print("customer ID: ");
+					int purchaseCustomerID = kbd.nextInt();
+					System.out.print("store number: ");
+					int purchaseStoreNumber = kbd.nextInt();
+					System.out.print("time of purchase (hh:mm:ss format): ");
+					String purchaseTime = kbd.next();
+					System.out.print("coffee ID: ");
+					int purchaseCoffeeID = kbd.nextInt();
+					System.out.print("redeem portion: ");
+					float redeemPortion = kbd.nextFloat();
+					System.out.print("purchase portion: ");
+					float purchasePortion = kbd.nextFloat();
+					int purchaseID = bc.addPurchase(purchaseCustomerID, purchaseStoreNumber, purchaseTime, purchaseCoffeeID, redeemPortion, purchasePortion);
+					if (purchaseID > 0){
+						System.out.println("\n\tSuccessfully inserterted purchase with ID: " + purchaseID + "!");
+					} else {
+						System.out.println("\n\tFailed to insert purchase!");
 					}
 					break;
 				case "quit":
