@@ -158,6 +158,59 @@ public class BoutiqueCoffee {
 	}
 
 	/*
+	Task #3: Schedule a promotion for a coffee for a given period
+	• Ask the user to supply the promotion name, start date, end date, and coffee ID.
+	• Assign a unique promotion ID for the new promotion.
+	• Insert all the supplied information and the promotion ID into the database.
+	• Display the promotion ID as a confirmation of successfully scheduling the new promotion in the database.
+	*/
+	public int schedulePromotion(String promotionName, String promotionStartDate, String promotionEndDate, int coffeeID){
+		int promotionNumber = 0;
+		// insert into Promotion
+		try {
+			st = connection.createStatement();
+
+			// get new promotion number
+			String getPromoNums = "select promotionNumber from Promotion;";
+			ResultSet allPromoNums = st.executeQuery(getPromoNums);
+			while(allPromoNums.next()){
+				int currentPromoNum = allPromoNums.getInt("promotionNumber");
+				if(currentPromoNum > promotionNumber){
+					promotionNumber = currentPromoNum;
+				}
+			}
+			promotionNumber += 1;
+			allPromoNums.close();
+
+			String insertPromo = "insert into Promotion values(" + promotionNumber + ", '" + promotionName + "', '" + promotionStartDate + "', '" + promotionEndDate + "');";
+			st.executeUpdate(insertPromo);
+
+			// check to make sure Promo was inserted successfully
+			String checkInsertWorked = "select promotionNumber from Promotion where promotionNumber = " + promotionNumber + ";";
+			ResultSet insertedPromoIDs = st.executeQuery(checkInsertWorked);
+			int resultPromoID = -1;
+			while(insertedPromoIDs.next()){
+				resultPromoID = insertedPromoIDs.getInt("promotionNumber");
+			}
+			if(resultPromoID != promotionNumber){
+				promotionNumber = -1;
+			}
+			insertedPromoIDs.close();
+
+			// insert into promotionFor(promotionID, coffeeID)
+			String insertPromoFor = "insert into promotionFor values(" + promotionNumber + ", " + coffeeID + ");";
+			st.executeUpdate(insertPromoFor);
+
+			st.close();
+	    	connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Unable to schedule new promotion!***\n");
+			e.printStackTrace();
+		}	
+		return promotionNumber;
+	}
+
+	/*
 		Task #9: Add a new customer
 		• Ask the user to provide the required fields for creating a new customer: first name, last name, middle initial, day of birth, month of birth, phone number and phone type.
 		• The new user’s loyalty level should be set to ‘basic’ since no reward points have been earned yet.
@@ -281,7 +334,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -366,6 +419,23 @@ public class BoutiqueCoffee {
 						System.out.println("\n\tSuccessfully inserterted purchase with ID: " + purchaseID + "!");
 					} else {
 						System.out.println("\n\tFailed to insert purchase!");
+					}
+					break;
+
+				case "insertPromotion":
+					System.out.print("promotion name: ");
+					String promotionName = kbd.next();
+					System.out.print("promotion start date ('YYYY-MM-DD' format): ");
+					String promotionStartDate = kbd.next();
+					System.out.print("promotion end date ('YYYY-MM-DD' format): ");
+					String promotionEndDate = kbd.next();
+					System.out.print("coffee ID: ");
+					int promoCoffeeID = kbd.nextInt();
+					int promoNum = bc.schedulePromotion(promotionName, promotionStartDate, promotionEndDate, promoCoffeeID);
+					if(promoNum <= 0){
+						System.out.println("\n\tFailed to add promotion with ID: " + promoNum + "to Promotion table!");
+					} else {
+						System.out.println("\n\tSuccessfully added promotion with promo number: " + promoNum + " to Promotion table!");
 					}
 					break;
 				case "quit":

@@ -112,3 +112,6 @@ insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 select * from Store;
 select * from Coffee;
 select * from Customer;
+select * from Purchase;
+select * from Promotion;
+select * from promotionFor;
