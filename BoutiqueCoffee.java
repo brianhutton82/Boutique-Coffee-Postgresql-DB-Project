@@ -50,11 +50,11 @@ public class BoutiqueCoffee {
 				st = connection.createStatement();
 
 				// generate a new store number
-				String getAllStoreNumbers = "select storeNumber from Store;";
+				String getAllStoreNumbers = "select storeID from Store;";
 				ResultSet allStoreNumbers = st.executeQuery(getAllStoreNumbers);
 				// get last store number
 				while(allStoreNumbers.next()){
-					int currentStoreNumber = allStoreNumbers.getInt("storeNumber");
+					int currentStoreNumber = allStoreNumbers.getInt("storeID");
 					if(currentStoreNumber > storeNumber){
 						storeNumber = currentStoreNumber;
 					}
@@ -83,11 +83,11 @@ public class BoutiqueCoffee {
 		        	st.executeUpdate(insertStore);
 
 		        	// check to make sure store was inserted successfully
-		        	String checkInsertWorked = "select storeNumber from Store where storeNumber = " + storeNumber + ";";
+		        	String checkInsertWorked = "select storeID from Store where storeID = " + storeNumber + ";";
 		        	ResultSet insertedStoreNumbers = st.executeQuery(checkInsertWorked);
 		        	int resultStoreNumber = -1;
 		        	while(insertedStoreNumbers.next()){
-		        		resultStoreNumber = insertedStoreNumbers.getInt("storeNumber");
+		        		resultStoreNumber = insertedStoreNumbers.getInt("storeID");
 		        	}
 		        	if(resultStoreNumber == storeNumber){
 		        		result = storeNumber;
@@ -171,10 +171,10 @@ public class BoutiqueCoffee {
 			st = connection.createStatement();
 
 			// get new promotion number
-			String getPromoNums = "select promotionNumber from Promotion;";
+			String getPromoNums = "select promotionID from Promotion;";
 			ResultSet allPromoNums = st.executeQuery(getPromoNums);
 			while(allPromoNums.next()){
-				int currentPromoNum = allPromoNums.getInt("promotionNumber");
+				int currentPromoNum = allPromoNums.getInt("promotionID");
 				if(currentPromoNum > promotionNumber){
 					promotionNumber = currentPromoNum;
 				}
@@ -186,11 +186,11 @@ public class BoutiqueCoffee {
 			st.executeUpdate(insertPromo);
 
 			// check to make sure Promo was inserted successfully
-			String checkInsertWorked = "select promotionNumber from Promotion where promotionNumber = " + promotionNumber + ";";
+			String checkInsertWorked = "select promotionID from Promotion where promotionID = " + promotionNumber + ";";
 			ResultSet insertedPromoIDs = st.executeQuery(checkInsertWorked);
 			int resultPromoID = -1;
 			while(insertedPromoIDs.next()){
-				resultPromoID = insertedPromoIDs.getInt("promotionNumber");
+				resultPromoID = insertedPromoIDs.getInt("promotionID");
 			}
 			if(resultPromoID != promotionNumber){
 				promotionNumber = -1;
@@ -241,10 +241,10 @@ public class BoutiqueCoffee {
 
 			// check & make sure promotionID exists
 			boolean promoExists = false;
-			String checkPromo = "select promotionNumber from Promotion where promotionNumber = " + promotionID + ";";
+			String checkPromo = "select promotionID from Promotion where promotionID = " + promotionID + ";";
 			ResultSet promos = st.executeQuery(checkPromo);
 			while(promos.next()){
-				if(promos.getInt("promotionNumber") == promotionID){
+				if(promos.getInt("promotionID") == promotionID){
 					promoExists = true;
 				}
 			}
@@ -252,10 +252,10 @@ public class BoutiqueCoffee {
 
 			// check & make sure store exists
 			boolean storeExists = false;
-			String checkStore = "select storeNumber from Store where storeNumber = " + storeID + ";";
+			String checkStore = "select storeID from Store where storeID = " + storeID + ";";
 			ResultSet stores = st.executeQuery(checkStore);
 			while(stores.next()){
-				if(stores.getInt("storeNumber") == storeID){
+				if(stores.getInt("storeID") == storeID){
 					storeExists = true;
 				}
 			}
@@ -381,7 +381,6 @@ public class BoutiqueCoffee {
 				allPurchaseIDs.close();
 				if(purchaseID > 0){
 					// insert this purchase
-					// (purchaseID, customerID, storeNumber, PurchaseTime, coffeeID, redeemPortion, purchasePortion)
 					String insertPurchase = "insert into Purchase values(" + purchaseID + ", " + customerID + ", " + storeNumber + ", '" + purchaseTime + "', " + coffeeID + ", " + redeemPortion + ", " + purchasePortion + ");";
 					st.executeUpdate(insertPurchase);
 				}

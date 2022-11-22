@@ -50,12 +50,12 @@ create table Customer (
 );
 
 create table Store (
-	storeNumber integer not null,
+	storeID integer not null,
 	storeName varchar(50) unique not null,
 	storeType store_type,
 	gpsLat real not null,
 	gpsLong real not null,
-	constraint storePK primary key(storeNumber)
+	constraint storePK primary key(storeID)
 );
 
 -- added check constraint to ensure rewardPoints & redeemPoints are non-negative
@@ -76,14 +76,14 @@ create table Coffee (
 create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
-	storeNumber integer not null,
+	storeID integer not null,
 	purchaseTime time,
 	coffeeID integer not null,
 	redeemPortion real check(redeemPortion >= 0),
 	purchasePortion real check(purchasePortion >= 0),
 	constraint purchasePK primary key(purchaseID),
 	constraint purchaseCustomerFK foreign key(customerID) references Customer(customerID) on delete cascade,
-	constraint purchaseStoreFK foreign key(storeNumber) references Store(storeNumber) on delete cascade,
+	constraint purchaseStoreFK foreign key(storeID) references Store(storeID) on delete cascade,
 	constraint purchaseCoffeeFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade,
 	constraint redeemOrPurchase check ((redeemPortion > 0 and purchasePortion > 0) = false)
 );
@@ -91,26 +91,26 @@ create table Purchase (
 -- removed not null requirement from promotionStartDate & promotionEndDate
 -- added check constraint to ensure end_date is not before start_date & vice-versa
 create table Promotion (
-	promotionNumber integer not null,
+	promotionID integer not null,
 	promotionName varchar(50),
 	promotionStartDate date check(promotionStartDate <= promotionEndDate),
 	promotionEndDate date check(promotionEndDate >= promotionStartDate),
-	constraint promotionPK primary key(promotionNumber)
+	constraint promotionPK primary key(promotionID)
 );
 
 create table hasPromotion (
 	promotionID integer not null,
 	storeID integer,
 	constraint hasPromotionPK primary key(promotionID, storeID),
-	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionNumber) on delete cascade,
-	constraint storeIDFK foreign key(storeID) references Store(storeNumber) on delete cascade
+	constraint promotionIDFK foreign key(promotionID) references Promotion(promotionID) on delete cascade,
+	constraint storeIDFK foreign key(storeID) references Store(storeID) on delete cascade
 );
 
 create table promotionFor (
 	promotionID integer not null,
 	coffeeID integer not null,
 	constraint promotionForPK primary key(promotionID, coffeeID),
-	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionNumber) on delete cascade,
+	constraint promotionIDFK foreign key (promotionID) references Promotion(promotionID) on delete cascade,
 	constraint coffeeIDFK foreign key(coffeeID) references Coffee(coffeeID) on delete cascade
 );
 
@@ -119,7 +119,7 @@ create table offersCoffee (
 	storeID integer not null,
 	constraint offersCoffeePK primary key (coffeeID, storeID),
 	constraint coffeeIDFK foreign key (coffeeID) references Coffee(coffeeID) on delete cascade,
-	constraint storeIDFK foreign key (storeID) references Store(storeNumber) on delete cascade
+	constraint storeIDFK foreign key (storeID) references Store(storeID) on delete cascade
 );
 
 create table Clock (
