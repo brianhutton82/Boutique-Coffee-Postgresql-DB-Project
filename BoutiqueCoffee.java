@@ -15,7 +15,7 @@ public class BoutiqueCoffee {
 
 	public BoutiqueCoffee(){
 		Scanner kbd = new Scanner(System.in);
-		System.out.print("Enter username: ");
+		System.out.print("\nEnter username: ");
 		username = kbd.next();
 		System.out.print("Enter password: ");
 		password = kbd.next();
@@ -201,6 +201,22 @@ public class BoutiqueCoffee {
 			String insertPromoFor = "insert into promotionFor values(" + promotionNumber + ", " + coffeeID + ");";
 			st.executeUpdate(insertPromoFor);
 
+			// ensure promotion was inserted into promotionFor table
+			String checkPromo = "select promotionID from promotionFor where promotionID = " + promotionNumber + ";";
+			ResultSet promotionForEntries = st.executeQuery(checkPromo);
+			boolean promotionInTable = false;
+			while(promotionForEntries.next()){
+				if(promotionForEntries.getInt("promotionID") == promotionNumber){
+					promotionInTable = true;
+				}
+			}
+			promotionForEntries.close();
+
+			if(!promotionInTable){
+				System.out.println("\n***promotion with ID " + promotionNumber + " not inserted into promotionFor table!***\n");
+				promotionNumber = -1;
+			}
+
 			st.close();
 	    	connection.commit();
 		} catch(Exception e){
@@ -208,6 +224,57 @@ public class BoutiqueCoffee {
 			e.printStackTrace();
 		}	
 		return promotionNumber;
+	}
+
+	/*
+		Task #4: Add an offer/promotion to a store
+		• Ask the user to supply the promotion ID and store ID.
+		• Insert all the supplied information into the database.
+		• Display the store ID as a confirmation of successfully offering the promotion in the database.
+	*/
+
+	public int addPromoToStore(int promotionID, int storeID){
+		int storeNumber = 0;
+		try{
+			st = connection.createStatement();
+			// hasPromotion(promotionID integer not null, storeID integer)
+
+			// check & make sure promotionID exists
+			boolean promoExists = false;
+			String checkPromo = "select promotionNumber from Promotion where promotionNumber = " + promotionID + ";";
+			ResultSet promos = st.executeQuery(checkPromo);
+			while(promos.next()){
+				if(promos.getInt("promotionNumber") == promotionID){
+					promoExists = true;
+				}
+			}
+			promos.close();
+
+			// check & make sure store exists
+			boolean storeExists = false;
+			String checkStore = "select storeNumber from Store where storeNumber = " + storeID + ";";
+			ResultSet stores = st.executeQuery(checkStore);
+			while(stores.next()){
+				if(stores.getInt("storeNumber") == storeID){
+					storeExists = true;
+				}
+			}
+			stores.close();
+
+			// if the storeID & promotionID are valid, add to hasPromotion table
+			if(promoExists && storeExists){
+				String insertIntoHasPromotion = "insert into hasPromotion values(" + promotionID + ", " + storeID + ");";
+				st.executeUpdate(insertIntoHasPromotion);
+				storeNumber = storeID;
+			}
+
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Unable to add promo to store!***\n");
+			e.printStackTrace();
+		}
+		return storeNumber;
 	}
 
 	/*
@@ -334,7 +401,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -437,6 +504,19 @@ public class BoutiqueCoffee {
 					} else {
 						System.out.println("\n\tSuccessfully added promotion with promo number: " + promoNum + " to Promotion table!");
 					}
+					break;
+				case "addPromoToStore":
+					System.out.print("promotion ID: ");
+					int promoID = kbd.nextInt();
+					System.out.print("store ID: ");
+					int storePromoID = kbd.nextInt();
+					int addedPromoToStore = bc.addPromoToStore(promoID, storePromoID);
+					if(addedPromoToStore == storePromoID){
+						System.out.println("\n\tSuccessfully added promotion ID: " + promoID + " to store with ID: " + addedPromoToStore + "!");
+					} else {
+						System.out.println("\n\tFailed to add promotion with ID: " + promoID + " to store with ID: " + storePromoID + "!");
+					}
+					// <-------------------------------------------- HERE ---------------------------------
 					break;
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
