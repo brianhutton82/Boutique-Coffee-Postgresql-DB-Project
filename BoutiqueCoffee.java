@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Date;
@@ -30,6 +30,7 @@ public class BoutiqueCoffee {
 			e.printStackTrace();
 		}
 	}
+
 
 	/*
 		Task #1: Add a new store
@@ -105,6 +106,7 @@ public class BoutiqueCoffee {
 		return result;
 	}
 
+
 	/*
 		Task #2: Add a new coffee to the BoutiqueCoffee menu/catalog
 		• Ask the user to supply the name, description, country of origin, intensity, price, award points, and redeem points.
@@ -156,6 +158,7 @@ public class BoutiqueCoffee {
 		}
 		return coffeeID;
 	}
+
 
 	/*
 	Task #3: Schedule a promotion for a coffee for a given period
@@ -226,13 +229,13 @@ public class BoutiqueCoffee {
 		return promotionNumber;
 	}
 
+
 	/*
 		Task #4: Add an offer/promotion to a store
 		• Ask the user to supply the promotion ID and store ID.
 		• Insert all the supplied information into the database.
 		• Display the store ID as a confirmation of successfully offering the promotion in the database.
 	*/
-
 	public int addPromoToStore(int promotionID, int storeID){
 		int storeNumber = 0;
 		try{
@@ -276,6 +279,70 @@ public class BoutiqueCoffee {
 		}
 		return storeNumber;
 	}
+
+
+	/*
+	Task #5: List all the stores with promotions
+	• Ask the user to specify if the query should list the stores promoting any coffee or for a specific coffee.
+	• In the latter case, the user should supply the coffee ID.
+	• Display the stores offering the promotion or a message (e.g., ‘No stores are currently offering any promotions’ or ‘No stores are currently promoting this coffee’) if no stores have the specified promotions.
+	*/
+	public ArrayList<String> getStoresWithPromotions(int coffeeID){
+		ArrayList<String> storesWithPromos = new ArrayList<String>();
+		// if coffeeID is not 0, then user wants to list stores with promo for that coffee
+		if(coffeeID > 0){
+			try {
+				st = connection.createStatement();
+				String getStoreWithCoffee = "select storeName from Store natural join hasPromotion natural join promotionFor where coffeeID=" + coffeeID + ";";
+				ResultSet storesWithCoffee = st.executeQuery(getStoreWithCoffee);
+				while(storesWithCoffee.next()){
+					String name = storesWithCoffee.getString("storeName");
+					storesWithPromos.add(name);
+				}
+				storesWithCoffee.close();
+
+				st.close();
+				connection.commit();
+			} catch(Exception e){
+				System.out.println("\n***Error listing all stores with promotions!\n");
+				e.printStackTrace();
+			}
+		} else {
+			// otherwise just get stores with promos
+			try {
+				st = connection.createStatement();
+
+				// get storeIDs with promos
+				ArrayList<Integer> arr = new ArrayList<Integer>();
+				String getStoresWithPromos = "select storeID from hasPromotion";
+				ResultSet storesPromos = st.executeQuery(getStoresWithPromos);
+				while(storesPromos.next()){
+					int store = storesPromos.getInt("storeID");
+					arr.add(store);
+				}
+				storesPromos.close();
+
+				// for each store ID get store name
+				for(int id : arr){
+					String getStoreNames = "select storeName from Store where storeID = " + id + ";";
+					ResultSet storeNames = st.executeQuery(getStoreNames);
+					while(storeNames.next()){
+						String strName = storeNames.getString("storeName");
+						storesWithPromos.add(strName);
+					}
+					
+				}
+
+				st.close();
+				connection.commit();
+			} catch(Exception e){
+				System.out.println("\n***Error listing all stores with promotions!\n");
+				e.printStackTrace();
+			}
+		}
+		return storesWithPromos;
+	}
+
 
 	/*
 		Task #9: Add a new customer
@@ -324,6 +391,7 @@ public class BoutiqueCoffee {
 		}
 		return customerID;
 	}
+
 
 	/*
 		Task #12: Add a purchase.
@@ -400,7 +468,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -515,7 +583,21 @@ public class BoutiqueCoffee {
 					} else {
 						System.out.println("\n\tFailed to add promotion with ID: " + promoID + " to store with ID: " + storePromoID + "!");
 					}
-					// <-------------------------------------------- HERE ---------------------------------
+					break;
+				case "listStoresWithPromos":
+					System.out.print("enter coffee ID (0 if you do not want to list promo for specific coffee): ");
+					int coffeePromoID = kbd.nextInt();
+					ArrayList<String> storesWithPromos = bc.getStoresWithPromotions(coffeePromoID);
+					if(storesWithPromos.isEmpty()){
+						System.out.println("\n\tNo stores are currently offering any promotions!");
+					} else {
+						System.out.println("\n--- Stores with Promos ---");
+						for(String strName : storesWithPromos){
+							System.out.println("• " + strName);
+						}
+						System.out.println();
+					}
+
 					break;
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");

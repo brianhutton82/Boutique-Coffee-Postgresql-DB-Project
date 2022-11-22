@@ -108,4 +108,6 @@ insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15')
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
 -- need to add to assumptions that birthDay & Month for customer will be of the form 'Mon' '00'
-select * from Purchase;
+insert into hasPromotion values(6000, 2001); -- promotionID, storeID
+insert into promotionFor values(6000, 1000); -- promotionID, coffeeID
+insert into offersCoffee values(1000, 2001); -- coffeeID, storeID
