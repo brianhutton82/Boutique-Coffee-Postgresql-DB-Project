@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Date;
+import java.lang.Math;
 import java.sql.*;
 
 public class BoutiqueCoffee {
@@ -343,6 +344,7 @@ public class BoutiqueCoffee {
 		return storesWithPromos;
 	}
 
+
 	/*
 		Task #6: Check if a given store has promotions
 		• Ask the user to specify if the query should list any promotions at the specified store or only the offers for a specific coffee.
@@ -381,6 +383,98 @@ public class BoutiqueCoffee {
 		}
 		return promos;
 	}
+
+
+	/*
+		Task #7: Find the closest store(s) for a given location (GPS)
+		• Ask the user to specify if the query should list any closest store or the closest stores offering a specific promotion.
+		• In the first case, the user should supply a GPS location (lat, lon).
+		• In the second case, the user should supply a GPS location (lat, lon) and promotion ID.
+		• In order to compute the closest store(s), you must use the Euclidean Distance:
+			d(p, q) = sqrt((qlat-plat)² + (qlon-plon)²)
+		• Display the closest store(s) for the provided GPS location.
+		• In the event of a tie, equidistant stores, all of the stores that are equidistantly the closest should be displayed.
+	*/
+	public ArrayList<String> getClosestStores(float gpsLAT, float gpsLON, int promoID){
+		ArrayList<String> closestStores = new ArrayList<String>();
+		String closestStoreName = null;
+		float distance = Float.MAX_VALUE;
+		try {
+			st = connection.createStatement();
+			
+			// if promoID == 0, then user does not care about promo
+			if(promoID == 0){
+				String getStores = "select * from Store;";
+				ResultSet stores = st.executeQuery(getStores);
+				while(stores.next()){
+					float lon = stores.getFloat("gpsLong");
+					float lat = stores.getFloat("gpsLat");
+					float tempDistance = (float)(Math.sqrt(Math.pow((lat - gpsLAT), 2) + Math.pow((lon - gpsLON), 2)));
+					if(tempDistance < distance){
+						distance = tempDistance;
+						closestStoreName = stores.getString("storeName");
+					}
+				}
+				// if we did find a close store, add it to array list
+				if(distance < Float.MAX_VALUE){
+					closestStores.add(closestStoreName);
+				}
+				stores.close();
+
+				// check to see if any other stores were equidistant, if so add them to array list
+				String getStores2 = "select * from Store;";
+				ResultSet stores2 = st.executeQuery(getStores2);
+				while(stores2.next()){
+					float lon = stores2.getFloat("gpsLong");
+					float lat = stores2.getFloat("gpsLat");
+					float tempDistance = (float)(Math.sqrt(Math.pow((lat - gpsLAT), 2) + Math.pow((lon - gpsLON), 2)));
+					if(tempDistance == distance && !stores2.getString("storeName").equals(closestStoreName)){
+						closestStores.add(stores2.getString("storeName"));
+					}
+				}
+				stores2.close();
+				
+			} else {
+				// otherwise if promotion != 0, then user wants closest store with specific promotion
+				String getStores = "select * from Store natural join hasPromotion where promotionID = " + promoID + ";";
+				ResultSet stores = st.executeQuery(getStores);
+				while(stores.next()){
+					float lon = stores.getFloat("gpsLong");
+					float lat = stores.getFloat("gpsLat");
+					float tempDistance = (float)(Math.sqrt(Math.pow((lat - gpsLAT), 2) + Math.pow((lon - gpsLON), 2)));
+					if(tempDistance < distance){
+						distance = tempDistance;
+						closestStoreName = stores.getString("storeName");
+					}
+				}
+				// if we did find a close store, add it to array list
+				if(distance < Float.MAX_VALUE){
+					closestStores.add(closestStoreName);
+				}
+				stores.close();
+
+				// check to see if any other stores were equidistant, if so add them to array list
+				String getStores2 = "select * from Store natural join hasPromotion where promotionID = " + promoID + ";";
+				ResultSet stores2 = st.executeQuery(getStores2);
+				while(stores2.next()){
+					float lon = stores2.getFloat("gpsLong");
+					float lat = stores2.getFloat("gpsLat");
+					float tempDistance = (float)(Math.sqrt(Math.pow((lat - gpsLAT), 2) + Math.pow((lon - gpsLON), 2)));
+					if(tempDistance == distance && !stores2.getString("storeName").equals(closestStoreName)){
+						closestStores.add(stores2.getString("storeName"));
+					}
+				}
+				stores2.close();
+			}
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Error computing closest store!***\n");
+			e.printStackTrace();
+		}
+		return closestStores;
+	}
+
 
 	/*
 		Task #9: Add a new customer
@@ -506,7 +600,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -651,6 +745,20 @@ public class BoutiqueCoffee {
 							System.out.println("• " + strname);
 						}
 						System.out.println();
+					}
+					break;
+
+				case "getClosestStores":
+					System.out.print("your gps longitude: ");
+					float longitude = kbd.nextFloat();
+					System.out.print("your gps latitude: ");
+					float latitude = kbd.nextFloat();
+					System.out.print("promotion ID (if not concerned about promotions, enter 0): ");
+					int storepromo_id = kbd.nextInt();
+					ArrayList<String> closeststores = bc.getClosestStores(latitude, longitude, storepromo_id);
+					System.out.println("\n--- Closest Stores ---");
+					for(String store : closeststores){
+						System.out.println("• " + store);
 					}
 					break;
 				case "quit":
