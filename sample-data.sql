@@ -111,3 +111,5 @@ insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 insert into hasPromotion values(6000, 2001); -- promotionID, storeID
 insert into promotionFor values(6000, 1000); -- promotionID, coffeeID
 insert into offersCoffee values(1000, 2001); -- coffeeID, storeID
+
+select * from Store natural join hasPromotion natural join Promotion;

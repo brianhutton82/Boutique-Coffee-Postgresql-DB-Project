@@ -343,6 +343,44 @@ public class BoutiqueCoffee {
 		return storesWithPromos;
 	}
 
+	/*
+		Task #6: Check if a given store has promotions
+		• Ask the user to specify if the query should list any promotions at the specified store or only the offers for a specific coffee.
+		• In the first case, the user should supply the store ID. In the second case, the user should supply the store ID and coffee ID.
+		• Display the promotions offered at the specified store or a message (e.g., ‘No promotions are currently offered at this store’ or ‘No promotions for this coffee are currently offered at this store’) if the provided store does not have the specified promotions.
+	*/
+	ArrayList<String> checkStoreForPromos(int storeID, int coffeeID){
+		// if coffeeID == 0, then user wants promos for a specific coffee, otherwise list all promos for given store
+		ArrayList<String> promos = new ArrayList<String>();
+		try {
+			st = connection.createStatement();
+
+			if(coffeeID == 0){
+				// get promotions from store with storeID
+				String getPromoNames = "select promotionName from Store natural join hasPromotion natural join Promotion;";
+				ResultSet promosAtStore = st.executeQuery(getPromoNames);
+				while(promosAtStore.next()){
+					String promoName = promosAtStore.getString("promotionName");
+					promos.add(promoName);
+				}
+				promosAtStore.close();
+			} else {
+				String getStoreCoffeePromos = "select promotionName from Store natural join hasPromotion natural join Promotion natural join promotionFor where coffeeID = " + coffeeID + ";";
+				ResultSet promosWithCoffee = st.executeQuery(getStoreCoffeePromos);
+				while(promosWithCoffee.next()){
+					String promoname = promosWithCoffee.getString("promotionName");
+					promos.add(promoname);
+				}
+				promosWithCoffee.close();
+			}
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n***Failed to check for store promos!***\n");
+			e.printStackTrace();
+		}
+		return promos;
+	}
 
 	/*
 		Task #9: Add a new customer
@@ -468,7 +506,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -598,6 +636,22 @@ public class BoutiqueCoffee {
 						System.out.println();
 					}
 
+					break;
+				case "checkStorePromos":
+					System.out.print("store ID: ");
+					int storepromoid = kbd.nextInt();
+					System.out.print("coffee ID (0 if you want all coffee promos): ");
+					int coffeepromoid = kbd.nextInt();
+					ArrayList<String> storespromos = bc.checkStoreForPromos(storepromoid, coffeepromoid);
+					if(storespromos.isEmpty()){
+						System.out.println("\n\tNo promotions at this store or for this coffee are currently offered!");
+					} else {
+						System.out.println("\n--- Promos at Store " + storepromoid + " ---");
+						for(String strname : storespromos){
+							System.out.println("• " + strname);
+						}
+						System.out.println();
+					}
 					break;
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
