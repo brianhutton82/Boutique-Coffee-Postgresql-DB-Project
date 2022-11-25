@@ -24,7 +24,7 @@ INSERT INTO Customer VALUES (9,'basic','Bridie','Rice','z',4,3,7610457547,'Home'
 INSERT INTO Customer VALUES (10,'basic','Junayd','Shah','i',23,6,1563396212,'Work');
 INSERT INTO Customer VALUES (11,'basic','Violet','Morgan','i',27,3,2230713723,'Home');
 INSERT INTO Customer VALUES (12,'basic','Mitchell','Ewing','m',4,5,2210634228,'Work');
-INSERT INTO Customer VALUES (13,'basic','Everly','Myers','n',30,11,8041600088,'Home');
+INSERT INTO Customer VALUES (13,'basic','Everly','Myers','n',30,11,8041600088,'Home', 12);
 INSERT INTO Customer VALUES (14,'basic','Arabella','Scott','k',28,7,6032834936,'Work');
 INSERT INTO Customer VALUES (15,'basic','David','Shepherd','b',29,1,1806106956,'Home');
 INSERT INTO Customer VALUES (16,'basic','Sumayyah','Thorne','k',8,11,9634640402,'Work');

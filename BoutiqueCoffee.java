@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.Date;
+import java.lang.StringBuilder;
 import java.lang.Math;
 import java.sql.*;
 
@@ -587,12 +587,54 @@ public class BoutiqueCoffee {
 		Task #10: Show the loyalty points of a customer
 		• Ask the user to supply the customer ID to display the total loyalty points for.
 	*/
-
+	public float getCustomerLoyaltyPoints(int customerID){
+		float totalPointsEarned = 0;
+		try {
+			st = connection.createStatement();
+			String getCustomer = "select totalPointsEarned from Customer where customerID = " + customerID + ";";
+			ResultSet points = st.executeQuery(getCustomer);
+			while(points.next()){
+				totalPointsEarned = points.getFloat("totalPointsEarned");
+			}
+			points.close();
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n\t***Error fetching customer loyalty points!***\n");
+		}
+		return totalPointsEarned;
+	}
 
 
 	/*
 		Task #11: Produce a ranked list of the most loyal customers
 	*/
+	public ArrayList<String> getRankedCustomerList(){
+		ArrayList<String> rankedList = new ArrayList<String>();
+		try {
+			st = connection.createStatement();
+			String getCustomers = "select customerID, customerFirstName, customerLastName, totalPointsEarned from Customer order by totalPointsEarned desc;";
+			ResultSet customers = st.executeQuery(getCustomers);
+			while(customers.next()){
+				int customerID = customers.getInt("customerID");
+				String customerFirstName = customers.getString("customerFirstName");
+				String customerLastName = customers.getString("customerLastName");
+				float totalPoints = customers.getFloat("totalPointsEarned");
+				StringBuilder sb = new StringBuilder("ID: " + String.valueOf(customerID));
+				sb.append(", " + customerFirstName);
+				sb.append(" " + customerLastName);
+				sb.append(", total points: " + String.valueOf(totalPoints));
+				String customer = sb.toString();
+				rankedList.add(customer);
+			}
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n\n\t***Failed to get ranked list of customers!***\n");
+		}
+
+		return rankedList;
+	}
 
 	/*
 		Task #12: Add a purchase.
@@ -669,7 +711,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -792,9 +834,9 @@ public class BoutiqueCoffee {
 					if(storesWithPromos.isEmpty()){
 						System.out.println("\n\tNo stores are currently offering any promotions!");
 					} else {
-						System.out.println("\n--- Stores with Promos ---");
+						System.out.println("\n\t--- Stores with Promos ---\n");
 						for(String strName : storesWithPromos){
-							System.out.println("• " + strName);
+							System.out.println("\t• " + strName);
 						}
 						System.out.println();
 					}
@@ -809,9 +851,9 @@ public class BoutiqueCoffee {
 					if(storespromos.isEmpty()){
 						System.out.println("\n\tNo promotions at this store or for this coffee are currently offered!");
 					} else {
-						System.out.println("\n--- Promos at Store " + storepromoid + " ---");
+						System.out.println("\n\t--- Promos at Store " + storepromoid + " ---\n");
 						for(String strname : storespromos){
-							System.out.println("• " + strname);
+							System.out.println("\t• " + strname);
 						}
 						System.out.println();
 					}
@@ -825,9 +867,9 @@ public class BoutiqueCoffee {
 					System.out.print("promotion ID (if not concerned about promotions, enter 0): ");
 					int storepromo_id = kbd.nextInt();
 					ArrayList<String> closeststores = bc.getClosestStores(latitude, longitude, storepromo_id);
-					System.out.println("\n--- Closest Stores ---");
+					System.out.println("\n\t--- Closest Stores ---\n");
 					for(String store : closeststores){
-						System.out.println("• " + store);
+						System.out.println("\t• " + store);
 					}
 					break;
 				case "setLoyaltyLevel":
@@ -842,6 +884,24 @@ public class BoutiqueCoffee {
 						System.out.println("\n\tfailed to add: " + levelName + " to LoyaltyLevel table!\n");
 					}
 					
+					break;
+				case "getLoyaltyPoints":
+					System.out.print("customer ID: ");
+					int custIDforPoints = kbd.nextInt();
+					float lpoints = bc.getCustomerLoyaltyPoints(custIDforPoints);
+					System.out.println("\n\ttotal points for customer with ID: " + custIDforPoints + " = " + lpoints + " points\n");
+					break;
+				case "getRankedList":
+					ArrayList<String> rankedList = bc.getRankedCustomerList();
+					if(rankedList.isEmpty()){
+						System.out.println("\n\t***No customers in Customers table!***\n");
+					} else {
+						System.out.println("\n\t--- List of Loyal Customers ---\n");
+						for(String loyalCustomer : rankedList){
+							System.out.println("\t• " + loyalCustomer);
+						}
+						System.out.println();
+					}
 					break;
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
