@@ -2,11 +2,13 @@
 -- Uday Atragada
 
 insert into LoyaltyLevel values('basic', 1);
+/*
 insert into LoyaltyLevel values('bronze',2);
 insert into LoyaltyLevel values('silver',3);
 insert into LoyaltyLevel values('gold',4);
 insert into LoyaltyLevel values('platinum',5);
 insert into LoyaltyLevel values('diamond', 6);
+*/
 
 -- 20 customers
 -- updated Customer insert statements to include LoyaltyID
@@ -113,3 +115,4 @@ insert into promotionFor values(6000, 1000); -- promotionID, coffeeID
 insert into offersCoffee values(1000, 2001); -- coffeeID, storeID
 
 select * from Store natural join hasPromotion natural join Promotion;
+select * from LoyaltyLevel;

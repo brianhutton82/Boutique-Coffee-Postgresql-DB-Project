@@ -477,6 +477,64 @@ public class BoutiqueCoffee {
 
 
 	/*
+		Task #8: Add/Set a loyalty level
+		• Ask the user to specify the required fields for creating or updating a loyalty level: loyalty level name and booster factor.
+		• If the member level doesn’t exist, the member level and its booster factor are inserted.
+		• If the member level exists, the booster factor is updated.
+		• Display the name of this loyalty level as a confirmation of successfully inserting or updating the loyalty level in the database.
+
+	*/
+	public String addOrSetLoyaltyLevel(String levelName, float boostFactor){
+		String loyaltyLevel = null;
+		try {
+			st = connection.createStatement();
+
+			// first see if levelName already exists
+			boolean resultSetEmpty = false;
+			try {
+				String getAllLoyaltyLevels = "select * from LoyaltyLevel where levelName = '" + levelName + "';";
+				ResultSet getLoyaltyLevels = st.executeQuery(getAllLoyaltyLevels);
+
+				if(getLoyaltyLevels.next() == false){
+					// if getLoyaltyLevels.next() is false, that levelName did not exist in the LoyaltyLevel table
+					resultSetEmpty = true;
+				}
+
+				getLoyaltyLevels.close();
+			} catch(Exception ex){
+				resultSetEmpty = true;
+			}
+
+			// if levelName did not exist, try inserting new levelName, otherwise update levelName entry
+			if(resultSetEmpty){
+				try {
+					String insertLoyaltyLevel = "insert into LoyaltyLevel values('" + levelName + "', " + boostFactor + ");";
+					st.executeUpdate(insertLoyaltyLevel);
+					loyaltyLevel = levelName;
+				} catch(Exception exc){
+					System.out.println("\n\t***Level name must be 'basic', 'bronze', 'silver', 'gold', 'platinum', or 'diamond'!***\n");
+				}
+
+			} else {
+				try {
+					String updateLoyaltyLevel = "update LoyaltyLevel set boostFactor = " + boostFactor + " where levelName = '" + levelName + "';";
+					st.executeUpdate(updateLoyaltyLevel);
+					loyaltyLevel = levelName;
+				} catch(Exception exce){
+					System.out.println("\n\t***Level name must be 'basic', 'bronze', 'silver', 'gold', 'platinum', or 'diamond'!***\n");
+				}	
+			}
+			st.close();
+			connection.commit();
+		} catch (Exception e){
+			System.out.println("\n***Error adding or setting loyalty level!***\n");
+			e.printStackTrace();
+		}
+		return loyaltyLevel;
+	}
+
+
+	/*
 		Task #9: Add a new customer
 		• Ask the user to provide the required fields for creating a new customer: first name, last name, middle initial, day of birth, month of birth, phone number and phone type.
 		• The new user’s loyalty level should be set to ‘basic’ since no reward points have been earned yet.
@@ -524,6 +582,17 @@ public class BoutiqueCoffee {
 		return customerID;
 	}
 
+
+	/*
+		Task #10: Show the loyalty points of a customer
+		• Ask the user to supply the customer ID to display the total loyalty points for.
+	*/
+
+
+
+	/*
+		Task #11: Produce a ranked list of the most loyal customers
+	*/
 
 	/*
 		Task #12: Add a purchase.
@@ -600,7 +669,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -760,6 +829,19 @@ public class BoutiqueCoffee {
 					for(String store : closeststores){
 						System.out.println("• " + store);
 					}
+					break;
+				case "setLoyaltyLevel":
+					System.out.print("level name: ");
+					String levelName = kbd.next();
+					System.out.print("boost factor: ");
+					Float boostFactor = kbd.nextFloat();
+					String resultLevelName = bc.addOrSetLoyaltyLevel(levelName, boostFactor);
+					if(resultLevelName != null){
+						System.out.println("\n\tlevel name: " + levelName + " added/updated successfully!\n");
+					} else {
+						System.out.println("\n\tfailed to add: " + levelName + " to LoyaltyLevel table!\n");
+					}
+					
 					break;
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
