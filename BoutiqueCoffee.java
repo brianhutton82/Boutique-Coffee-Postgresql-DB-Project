@@ -745,12 +745,41 @@ public class BoutiqueCoffee {
 		return menu;
 	}
 
+
+	/*
+		Task #14: List the IDs and names of all coffees of a specified intensity and each of which has two specified keywords in their names (i.e., both keywords in its name)
+		• Ask the user to supply the intensity and both keywords.
+		• Display coffee IDs of the provided intensity, each of which has both keywords in the coffee’s name, or a message (e.g., ‘No coffees satisfied these conditions’) if no coffees satisfy the provided intensity or contain both keywords in the coffee’s name.
+	*/
+	public ArrayList<String> listCoffeeWithIntensity(String keywordOne, String keywordTwo, int intensity){
+		ArrayList<String> coffeeIntensityList = new ArrayList<String>();
+		try {
+			st = connection.createStatement();
+
+			String getCoffees = "select coffeeID, coffeeName from Coffee where intensity = " + intensity + " and coffeeName like '%" + keywordOne + "%'" + " and coffeeName like '%" + keywordTwo + "%';";
+			ResultSet coffees = st.executeQuery(getCoffees);
+			while(coffees.next()){
+				int id = coffees.getInt("coffeeID");
+				String name = coffees.getString("coffeeName");
+				StringBuilder sb = new StringBuilder("ID: " + String.valueOf(id) + ", coffee name: " + name);
+				coffeeIntensityList.add(sb.toString());
+			}
+			coffees.close();
+
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n\t***Failed to fetch coffees with specified intensty & keywords***\n");
+		}
+		return coffeeIntensityList;
+	}
+
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		BoutiqueCoffee bc = new BoutiqueCoffee();
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -950,6 +979,23 @@ public class BoutiqueCoffee {
 						System.out.println("\n\t--- Boutique Coffee Menu ---\n");
 						for(String menuEntry : menu){
 							System.out.println("\t• " + menuEntry);
+						}
+					}
+					break;
+				case "listCoffeeIntensity":
+					System.out.print("keyword one: ");
+					String keywordOne = kbd.next();
+					System.out.print("keyword two: ");
+					String keywordTwo = kbd.next();
+					System.out.print("intensity: ");
+					int intense = kbd.nextInt();
+					ArrayList<String> coffeeIntensityList = bc.listCoffeeWithIntensity(keywordOne, keywordTwo, intense);
+					if(coffeeIntensityList.isEmpty()){
+						System.out.println("\n\t\nNo coffees satisfied these conditions!\n");
+					} else {
+						System.out.println("\n\t--- Coffees with Intensity Level " + String.valueOf(intense) + " ---\n");
+						for(String entry : coffeeIntensityList){
+							System.out.println("\t• " + entry);
 						}
 					}
 					break;

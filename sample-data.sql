@@ -116,3 +116,5 @@ insert into offersCoffee values(1000, 2001); -- coffeeID, storeID
 
 select * from Store natural join hasPromotion natural join Promotion;
 select * from LoyaltyLevel;
+select * from Coffee where coffeeName like '%mocha%' or coffeeName like '%Cold%';
+select coffeeID, coffeeName from Coffee where intensity = 11 and coffeeName like '%Cold%' and coffeeName like '%brew%';
