@@ -987,7 +987,7 @@ public class BoutiqueCoffee {
 					String keywordOne = kbd.next();
 					System.out.print("keyword two: ");
 					String keywordTwo = kbd.next();
-					System.out.print("intensity: ");
+					System.out.print("intensity (1 ≤ n ≤ 12): ");
 					int intense = kbd.nextInt();
 					ArrayList<String> coffeeIntensityList = bc.listCoffeeWithIntensity(keywordOne, keywordTwo, intense);
 					if(coffeeIntensityList.isEmpty()){
