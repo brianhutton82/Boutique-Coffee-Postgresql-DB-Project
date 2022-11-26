@@ -706,12 +706,51 @@ public class BoutiqueCoffee {
 	}
 
 
+	/*
+		Task #13: List the full coffee information in the BoutiqueCoffee menu/catalog
+		• Display the full coffee information offered in the BoutiqueCoffee menu/catalog or a message (e.g., ‘No items are currently offered by BoutiqueCoffee’) if no coffees are currently offered.
+	*/
+	public ArrayList<String> listCoffeeMenu(){
+		ArrayList<String> menu = new ArrayList<String>();
+		try {
+			st = connection.createStatement();
+			String getCoffees = "select * from Coffee;";
+			ResultSet coffees = st.executeQuery(getCoffees);
+			while(coffees.next()){
+				int coffeeID = coffees.getInt("coffeeID");
+				String coffeeName = coffees.getString("coffeeName");
+				//String description = coffees.getString("description");
+				String countryOfOrigin = coffees.getString("countryOfOrigin");
+				int intensity = coffees.getInt("intensity");
+				float price = coffees.getFloat("price");
+				float rewardPoints = coffees.getFloat("rewardPoints");
+				float redeemPoints = coffees.getFloat("redeemPoints");
+				StringBuilder sb = new StringBuilder("ID: " + String.valueOf(coffeeID) + ", ");
+				sb.append("name: " + coffeeName + ", ");
+				//sb.append("description: " + description + ", ");
+				sb.append("country: " + countryOfOrigin + ", ");
+				sb.append("intensity: " + String.valueOf(intensity) + ", ");
+				sb.append("price: $" + String.valueOf(price) + ", ");
+				sb.append(", reward points: " + String.valueOf(rewardPoints) + ", ");
+				sb.append("redeem points: " + String.valueOf(redeemPoints));
+				String coffeeMenuEntry = sb.toString();
+				menu.add(coffeeMenuEntry);
+			}
+			coffees.close();
+			st.close();
+			connection.commit();
+		} catch(Exception e){
+			System.out.println("\n\t***Error fetching Coffee Menu!***\n");
+		}
+		return menu;
+	}
+
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		BoutiqueCoffee bc = new BoutiqueCoffee();
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -901,6 +940,17 @@ public class BoutiqueCoffee {
 							System.out.println("\t• " + loyalCustomer);
 						}
 						System.out.println();
+					}
+					break;
+				case "listCoffeeMenu":
+					ArrayList<String> menu = bc.listCoffeeMenu();
+					if(menu.isEmpty()){
+						System.out.println("\n\tNo items are currently offered by BoutiqueCoffee!\n");
+					} else {
+						System.out.println("\n\t--- Boutique Coffee Menu ---\n");
+						for(String menuEntry : menu){
+							System.out.println("\t• " + menuEntry);
+						}
 					}
 					break;
 				case "quit":
