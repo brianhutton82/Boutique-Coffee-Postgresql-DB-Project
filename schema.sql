@@ -77,7 +77,7 @@ create table Purchase (
 	purchaseID integer not null,
 	customerID integer not null,
 	storeID integer not null,
-	purchaseTime time,
+	purchaseTime timestamp,
 	coffeeID integer not null,
 	redeemPortion real check(redeemPortion >= 0),
 	purchasePortion real check(purchasePortion >= 0),
@@ -123,7 +123,7 @@ create table offersCoffee (
 );
 
 create table Clock (
-	p_date date,
+	p_date timestamp,
 	constraint pDatePK primary key(p_date)
 );
 

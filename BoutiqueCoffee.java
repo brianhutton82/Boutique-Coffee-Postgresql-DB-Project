@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Scanner;
+import java.time.LocalDate;
 import java.lang.StringBuilder;
 import java.lang.Math;
 import java.sql.*;
@@ -482,7 +485,6 @@ public class BoutiqueCoffee {
 		• If the member level doesn’t exist, the member level and its booster factor are inserted.
 		• If the member level exists, the booster factor is updated.
 		• Display the name of this loyalty level as a confirmation of successfully inserting or updating the loyalty level in the database.
-
 	*/
 	public String addOrSetLoyaltyLevel(String levelName, float boostFactor){
 		String loyaltyLevel = null;
@@ -774,12 +776,99 @@ public class BoutiqueCoffee {
 		return coffeeIntensityList;
 	}
 
+	/*
+		Task #15: List the IDs of the top K stores having the highest revenue for the past X months
+		• Ask the user to supply: k the K in top K, and x the timespan of month(s).
+		• Revenue is defined as the sum of money that the customer paid for the coffees.
+		• 1 month is defined as 30 days counting back starting from the current date time.
+		• Display the top K stores in the past X months in sorted order, with the store ID of the store having the highest revenue at the head.
+		• If multiple stores have the same revenue, their order in the returned result can be arbitrary.
+		• If multiple stores have the same revenue in the Kth highest revenue position, their store IDs should all be returned.
+	*/
+	public ArrayList<String> listTopKstores(int k, int x) {
+
+		ArrayList<String> topKstores = new ArrayList<String>();
+		Hashtable<Integer, Float> storeTotalRevenues = new Hashtable<Integer, Float>();
+		Hashtable<Integer, String> storeNames = new Hashtable<Integer, String>();
+
+		try {
+
+			st = connection.createStatement();
+
+			// get current date from Clock table
+			LocalDate today = null;
+			LocalDate dateLimit = null;
+			String getCurrentDate = "select extract(month from(select p_date from Clock)) as month, extract(day from (select p_date from Clock)) as day, extract(year from (select p_date from Clock)) as year;";
+			ResultSet currentDate = st.executeQuery(getCurrentDate);
+			while(currentDate.next()){
+				int year = currentDate.getInt("year");
+				int month = currentDate.getInt("month");
+				int day = currentDate.getInt("day");
+				today = LocalDate.of(year, month, day);
+			}
+			currentDate.close();
+
+			// if clock table was initialized, figure out how far back we should look
+			if (today != null) {
+				dateLimit = today.minusMonths(x);
+			}
+
+			// get all store names & IDs
+			String getAllStores = "select storeID, storeName from Store;";
+			ResultSet storeIDs = st.executeQuery(getAllStores);
+			while(storeIDs.next()){
+				int storeID = storeIDs.getInt("storeID");
+				String storeName = storeIDs.getString("storeName");
+				storeNames.put(storeID, storeName);
+			}
+			storeIDs.close();
+
+			// compute total dollar value of all purchases within x months for each store
+			String getStoreRevenues = "select storeID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= '" + dateLimit.toString() + "') as purchasesAfter group by storeID order by purchases;";
+			ResultSet storeRevenues = st.executeQuery(getStoreRevenues);
+			while(storeRevenues.next()){
+				int storeID = storeRevenues.getInt("storeID");
+				float purchases = storeRevenues.getFloat("purchases");
+				storeTotalRevenues.put(storeID, purchases);
+			}
+			storeRevenues.close();
+
+			// construct string containing: storeID, storeName, totalRevenue
+			Enumeration<Integer> e = storeTotalRevenues.keys();
+			while (e.hasMoreElements()) {
+				int storeID = e.nextElement();
+				float revenue = storeTotalRevenues.get(storeID);
+				String name = storeNames.get(storeID);
+				StringBuilder sb = new StringBuilder("ID: " + storeID);
+				sb.append(" name: " + name);
+				sb.append(" revenue: " + revenue);
+				topKstores.add(sb.toString());
+			}
+
+
+			st.close();
+			connection.commit();
+		} catch(Exception e) {
+			System.out.println("\n\t***Failed to fetch the top " + String.valueOf(k) + " stores with the highest revenue!***\n");
+		}
+		return topKstores;
+	}
+
+	/*
+		Task #16: List the IDs of the top K customers having spent the most money buying coffee in the past X months
+		• Ask the user to supply: k the K in top K, and x the timespan of month(s).
+		• 1 month is defined as 30 days counting back starting from the current date time.
+		• Display the top K customers in the past X months in sorted order, with the customer ID of the customer having spent the most money at the head.
+		• If multiple customers have the same spending, their order in the returned result can be arbitrary.
+		• If multiple customers have the same sp
+	*/
+
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		BoutiqueCoffee bc = new BoutiqueCoffee();
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• listTopKstores: List top k stores having highest revenue for the past x months\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -999,6 +1088,22 @@ public class BoutiqueCoffee {
 						}
 					}
 					break;
+				case "listTopKstores":
+					System.out.print("number of stores to list: ");
+					int k = kbd.nextInt();
+					System.out.print("number of months to span: ");
+					int x = kbd.nextInt();
+					ArrayList<String> topkstores = bc.listTopKstores(k, x);
+					if(topkstores.isEmpty()){
+						System.out.println("\n\t*** An error occurred when trying to list the top " + k + " stores!***\n");
+					} else {
+						System.out.println("\n---Top " + k + " Stores---");
+						for(String entry : topkstores) {
+							System.out.println("• " + entry);
+						}
+					}
+					break;
+					
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
 					break;
