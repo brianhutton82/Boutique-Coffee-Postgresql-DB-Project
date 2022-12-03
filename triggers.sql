@@ -1,3 +1,5 @@
+-- Brian Hutton
+
 -- when Clock is updated, check to see if customer should receive gift points
 -- on a customers birthday, the total number of points earned is increased by 10%
 create or replace function updatePointsOnBirthday()
