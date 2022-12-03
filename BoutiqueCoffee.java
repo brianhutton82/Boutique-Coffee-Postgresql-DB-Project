@@ -103,7 +103,7 @@ public class BoutiqueCoffee {
         		connection.commit();
 			} catch(Exception ex){
 				System.err.println("\n***Failed to add store!***\n");
-				ex.printStackTrace();
+				ex.printStackTrace();				
 			}
 
 		}
