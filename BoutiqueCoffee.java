@@ -776,6 +776,7 @@ public class BoutiqueCoffee {
 		return coffeeIntensityList;
 	}
 
+
 	/*
 		Task #15: List the IDs of the top K stores having the highest revenue for the past X months
 		• Ask the user to supply: k the K in top K, and x the timespan of month(s).
