@@ -27,6 +27,7 @@ check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
 -- moved foreign key to Customer table
 -- added check constraint to ensure boostFactor is non-negative
+-- add assumption that each loyalty level will have a unique associated boost factor
 create table LoyaltyLevel (
 	levelName loyalty_level default 'basic',
 	boostFactor real check(boostFactor >= 0),

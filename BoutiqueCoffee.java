@@ -845,7 +845,6 @@ public class BoutiqueCoffee {
 				topKstores.add(sb.toString());
 			}
 
-
 			st.close();
 			connection.commit();
 		} catch(Exception e) {
@@ -868,7 +867,7 @@ public class BoutiqueCoffee {
 		String command = null;
 		Scanner kbd = new Scanner(System.in);
 		do {
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• removeStore: removes store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• listTopKstores: List top k stores having highest revenue for the past x months\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• listTopKstores: List top k stores having highest revenue for the past x months\n• ...\n• quit: closes DB connection and ends program");
 			System.out.print("\nenter command: ");
 			command = kbd.next();
 			switch(command){
@@ -888,9 +887,7 @@ public class BoutiqueCoffee {
 						System.out.println("\n\tFailed to add " + storeName + " to Store table");
 					}
 					break;
-				case "removeStore":
-					System.out.println("\n***PLACEHOLDER FOR REMOVE STORE!***\n");
-					break;
+
 				case "insertCoffee":
 					System.out.print("Coffee name: ");
 					String coffeeName = kbd.next();
@@ -1103,7 +1100,7 @@ public class BoutiqueCoffee {
 						}
 					}
 					break;
-					
+
 				case "quit":
 					System.out.println("\n***Goodbye!***\n");
 					break;

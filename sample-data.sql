@@ -116,4 +116,4 @@ insert into offersCoffee values(1000, 2001); -- coffeeID, storeID
 
 -- need trigger to ensure purchasePortion == coffee price, if purchasePortion > 0
 
-select storeID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= '09-01-2021') as purchasesAfter group by storeID order by purchases;
+select * from Customer;
