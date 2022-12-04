@@ -848,19 +848,6 @@ public class BoutiqueCoffee {
 				topKstores.add(sb.toString());
 			}
 
-			/*
-			Enumeration<Integer> e = storeTotalRevenues.keys();
-			while (e.hasMoreElements()) {
-				int storeID = e.nextElement();
-				float revenue = storeTotalRevenues.get(storeID);
-				String name = storeNames.get(storeID);
-				StringBuilder sb = new StringBuilder("ID: " + storeID);
-				sb.append(" name: " + name);
-				sb.append(" revenue: " + revenue);
-				topKstores.add(sb.toString());
-			}
-			*/
-
 			st.close();
 			connection.commit();
 		} catch(Exception e) {
@@ -940,21 +927,6 @@ public class BoutiqueCoffee {
 				sb.append(" total purchases: " + purchase_total);
 				topcustomers.add(sb.toString());
 			}
-
-			/*
-			counter = 0;
-			Enumeration<Integer> e = customerIDsAndPurchases.keys();
-			while ((counter < k) && e.hasMoreElements()) {
-				int customer_id = e.nextElement();
-				float purchase_total = customerIDsAndPurchases.get(customer_id);
-				String name = customerNames.get(customer_id);
-				StringBuilder sb = new StringBuilder("ID: " + customer_id);
-				sb.append(" name: " + name);
-				sb.append(" total purchases: " + purchase_total);
-				topcustomers.add(sb.toString());
-				counter++;
-			}
-			*/
 
 			st.close();
 			connection.commit();

@@ -111,5 +111,3 @@ insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 insert into hasPromotion values(6000, 2001);
 insert into promotionFor values(6000, 1000);
 insert into offersCoffee values(1000, 2001);
-
-select customerID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= 'Sep 1, 2022') as purchasesAfter group by customerID order by purchases desc;
