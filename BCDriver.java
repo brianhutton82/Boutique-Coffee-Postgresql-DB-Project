@@ -30,7 +30,7 @@ public class BCDriver {
 
 		do {
 
-			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• listTopKstores: List top k stores having highest revenue for the past x months\n• ...\n• quit: closes DB connection and ends program");
+			System.out.println("\n---List of Commands---\n\n• insertStore: inserts new store\n• listStoresWithPromos: list all stores with promotions\n• insertCoffee: adds new coffee\n• insertCustomer: inserts new customer\n• insertPurchase: insert new purhcase\n• insertPromotion: schedule a promotion for a coffee\n• addPromoToStore: add a promo to a store\n• checkStorePromos: check if a given store has promotions\n• getClosestStores: get closest stores to your lat & long\n• setLoyaltyLevel: add or update loyalty level\n• getLoyaltyPoints: get total loyalty points for customer\n• getRankedList: get ranked list of most loyal customers\n• listCoffeeMenu: list BoutiqueCoffee menu\n• listCoffeeIntensity: list IDs & names of coffees with specified intensity\n• listTopKstores: List top k stores having highest revenue for the past x months\n• listTopCustomerIDs: List top k customers who have spent the most money within x months\n• quit: closes DB connection and ends program");
 
 			System.out.print("\nenter command: ");
 			command = kbd.next();
@@ -342,6 +342,22 @@ public class BCDriver {
 						System.out.println("\n---Top " + k + " Stores---");
 						for(String entry : topkstores) {
 							System.out.println("• " + entry);
+						}
+					}
+					break;
+
+				case "listTopCustomerIDs":
+					System.out.print("number of customers to list: ");
+					int kCustomers = kbd.nextInt();
+					System.out.print("number of months to span: ");
+					int xMonths = kbd.nextInt();
+					ArrayList<String> topkcustomers = bc.listTopCustomerIDs(kCustomers, xMonths);
+					if (topkcustomers.isEmpty()) {
+						System.out.println("\n\t*** An error occurred when trying to list the top " + kCustomers + " customers!***\n");
+					} else {
+						System.out.println("\n---Top " + kCustomers + " Customers---");
+						for(String cust : topkcustomers){
+							System.out.println("• " + cust);
 						}
 					}
 					break;

@@ -108,9 +108,8 @@ insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20')
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
--- need to add to assumptions that birthDay & Month for customer will be of the form 'Mon' '00'
 insert into hasPromotion values(6000, 2001);
 insert into promotionFor values(6000, 1000);
 insert into offersCoffee values(1000, 2001);
 
--- need trigger to ensure purchasePortion == coffee price, if purchasePortion > 0
+select customerID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= 'Sep 1, 2022') as purchasesAfter group by customerID order by purchases desc;

@@ -825,16 +825,30 @@ public class BoutiqueCoffee {
 			storeIDs.close();
 
 			// compute total dollar value of all purchases within x months for each store
-			String getStoreRevenues = "select storeID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= '" + dateLimit.toString() + "') as purchasesAfter group by storeID order by purchases;";
+			ArrayList<Integer> order = new ArrayList<Integer>();
+			int counter = 0;
+			String getStoreRevenues = "select storeID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= '" + dateLimit.toString() + "') as purchasesAfter group by storeID order by purchases desc;";
 			ResultSet storeRevenues = st.executeQuery(getStoreRevenues);
-			while(storeRevenues.next()){
+			while((counter < k) && storeRevenues.next()){
 				int storeID = storeRevenues.getInt("storeID");
 				float purchases = storeRevenues.getFloat("purchases");
 				storeTotalRevenues.put(storeID, purchases);
+				order.add(storeID);
+				counter++;
 			}
 			storeRevenues.close();
 
 			// construct string containing: storeID, storeName, totalRevenue
+			for(int storeID : order){
+				float revenue = storeTotalRevenues.get(storeID);
+				String name = storeNames.get(storeID);
+				StringBuilder sb = new StringBuilder("ID: " + storeID);
+				sb.append(" name: " + name);
+				sb.append(" revenue: " + revenue);
+				topKstores.add(sb.toString());
+			}
+
+			/*
 			Enumeration<Integer> e = storeTotalRevenues.keys();
 			while (e.hasMoreElements()) {
 				int storeID = e.nextElement();
@@ -845,6 +859,7 @@ public class BoutiqueCoffee {
 				sb.append(" revenue: " + revenue);
 				topKstores.add(sb.toString());
 			}
+			*/
 
 			st.close();
 			connection.commit();
@@ -863,5 +878,90 @@ public class BoutiqueCoffee {
 		• If multiple customers have the same sp
 	*/
 
+	public ArrayList<String> listTopCustomerIDs (int k, int x) {
+		ArrayList<String> topcustomers = new ArrayList<String>();
+		Hashtable<Integer, String> customerNames = new Hashtable<Integer, String>();
+		Hashtable<Integer, Float> customerIDsAndPurchases = new Hashtable<Integer, Float>();
+		try {
+			st = connection.createStatement();
 
+			// get current date from Clock table
+			LocalDate today = null;
+			LocalDate dateLimit = null;
+			String getCurrentDate = "select extract(month from(select p_date from Clock)) as month, extract(day from (select p_date from Clock)) as day, extract(year from (select p_date from Clock)) as year;";
+			ResultSet currentDate = st.executeQuery(getCurrentDate);
+			while(currentDate.next()){
+				int year = currentDate.getInt("year");
+				int month = currentDate.getInt("month");
+				int day = currentDate.getInt("day");
+				today = LocalDate.of(year, month, day);
+			}
+			currentDate.close();
+
+			// if clock table was initialized, figure out how far back we should look
+			if (today != null) {
+				dateLimit = today.minusMonths(x);
+			}
+
+			// get customer names
+			String getCustomerNames = "select customerID, customerFirstName, customerLastName from Customer;";
+			ResultSet customerNamesSet = st.executeQuery(getCustomerNames);
+			while(customerNamesSet.next()){
+				int cust_id = customerNamesSet.getInt("customerID");
+				String first = customerNamesSet.getString("customerFirstName");
+				String last = customerNamesSet.getString("customerLastName");
+				StringBuilder sb = new StringBuilder();
+				sb.append(first + " " + last);
+				String cust = sb.toString();
+				customerNames.put(cust_id, cust);
+			}
+			customerNamesSet.close();
+
+			// get top k purchases made by customers and add those to the hashtable
+			int counter = 0;
+			ArrayList<Integer> order = new ArrayList<Integer>();
+			String getCustomerPurchases = "select customerID, sum(price * purchasePortion) as purchases from (Coffee natural join Purchase) as coffeePurchases natural join (select * from Purchase where purchaseTime >= '" + dateLimit.toString() + "') as purchasesAfter group by customerID order by purchases desc;";
+			ResultSet customerPurchases = st.executeQuery(getCustomerPurchases);
+			while((counter < k) && customerPurchases.next()){
+				int customerID = customerPurchases.getInt("customerID");
+				float purchasetotal = customerPurchases.getFloat("purchases");
+				customerIDsAndPurchases.put(customerID, purchasetotal);
+				order.add(customerID);
+				counter++;
+			}
+			customerPurchases.close();
+
+			// construct string containing: customerID, customerFirstName, customerLastName, and purchasetotal
+			for(int customer_id : order){
+				float purchase_total = customerIDsAndPurchases.get(customer_id);
+				String name = customerNames.get(customer_id);
+				StringBuilder sb = new StringBuilder("ID: " + customer_id);
+				sb.append(" name: " + name);
+				sb.append(" total purchases: " + purchase_total);
+				topcustomers.add(sb.toString());
+			}
+
+			/*
+			counter = 0;
+			Enumeration<Integer> e = customerIDsAndPurchases.keys();
+			while ((counter < k) && e.hasMoreElements()) {
+				int customer_id = e.nextElement();
+				float purchase_total = customerIDsAndPurchases.get(customer_id);
+				String name = customerNames.get(customer_id);
+				StringBuilder sb = new StringBuilder("ID: " + customer_id);
+				sb.append(" name: " + name);
+				sb.append(" total purchases: " + purchase_total);
+				topcustomers.add(sb.toString());
+				counter++;
+			}
+			*/
+
+			st.close();
+			connection.commit();
+		} catch (Exception e) {
+			System.out.println("\n\t***Failed to fetch top " + String.valueOf(k) + " customer purchases!***\n");
+			e.printStackTrace();
+		}
+		return topcustomers;
+	}
 }
