@@ -1,13 +1,11 @@
 -- Brian Hutton
 
-insert into LoyaltyLevel values('basic', 1);
-/*
-insert into LoyaltyLevel values('bronze',2);
-insert into LoyaltyLevel values('silver',3);
-insert into LoyaltyLevel values('gold',4);
-insert into LoyaltyLevel values('platinum',5);
-insert into LoyaltyLevel values('diamond', 6);
-*/
+insert into LoyaltyLevel values('basic', 1, 0);
+insert into LoyaltyLevel values('bronze',2, 10);
+insert into LoyaltyLevel values('silver',3, 20);
+insert into LoyaltyLevel values('gold',4, 30);
+insert into LoyaltyLevel values('platinum',5, 40);
+insert into LoyaltyLevel values('diamond', 6, 50);
 
 -- 20 customers
 -- updated Customer insert statements to include LoyaltyID

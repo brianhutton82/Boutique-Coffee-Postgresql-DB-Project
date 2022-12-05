@@ -30,6 +30,7 @@ check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 create table LoyaltyLevel (
 	levelName loyalty_level default 'basic',
 	boostFactor real check(boostFactor >= 0),
+	numPurchases integer default 0,
 	constraint loyaltyPK primary key(levelName)
 );
 

@@ -924,7 +924,7 @@ public class BoutiqueCoffee {
 				String name = customerNames.get(customer_id);
 				StringBuilder sb = new StringBuilder("ID: " + customer_id);
 				sb.append(" name: " + name);
-				sb.append(" total purchases: " + purchase_total);
+				sb.append(" total purchases: $" + purchase_total);
 				topcustomers.add(sb.toString());
 			}
 
