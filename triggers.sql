@@ -65,9 +65,6 @@ declare
 	new_points real;
     coffee_points real;
 begin
-	-- get new computed points
-	select into new_points updateCustomerPoints(new.customerID, new.coffeeID);
-
 	select redeemPoints
 	into coffee_points
 	from Coffee
@@ -76,6 +73,9 @@ begin
 	-- if customer is using reward points subtract the points of that coffee
 	if new.redeemPortion > 0 and new.purchasePortion = 0 then
         new_points := new_points - coffee_points;
+    else
+	    -- get new computed points since customer is purchasing not redeeming
+	    select into new_points updateCustomerPoints(new.customerID, new.coffeeID);
     end if;
 
 	-- update Customers points
