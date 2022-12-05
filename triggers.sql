@@ -36,22 +36,23 @@ declare
 	customer_points real;
 	new_points real;
 begin
+	-- select boost factor of the customer
 	select boostFactor
 	into boost
 	from Customer join LoyaltyLevel
 	on Customer.loyaltyLevel = LoyaltyLevel.levelName
 	where customerID = custID;
-
+	--select reward points of the coffee purchased
 	select rewardPoints
 	into coffee_points
 	from Coffee
 	where coffeeID = coffID;
-
+	--find customers earned points
 	select totalPointsEarned
 	into customer_points
 	from Customer
 	where customerID = custID;
-
+	--computes the new points that a customer using coffee points, boost factor of their level, and their points before the transaction
 	new_points := ((coffee_points * boost) + customer_points);
 	return new_points;
 end;
@@ -94,7 +95,7 @@ execute procedure updateCustomerOnPurchase();
 
 -- removes coupon when expired
 create or replace function removeExpiredPromo()
-return trigger as 
+returns trigger as
 $$
 declare
 	currTime real;
@@ -102,21 +103,80 @@ begin
 	-- get time 
 	select p_date
 	into currTime
-	from Clock
+	from Clock;
 	-- delete promotions with end date before time 
-	delete from Promotion
-	where promotionEndDate < currTime;
+	DELETE
+	FROM Promotion
+	WHERE promotionEndDate < currTime;
 	return new;
 end;
-$$ langauge plpgsql;
+$$ language plpgsql;
 
 drop trigger if exists clockUpdate on Clock
 create trigger clockUpdate
 after insert or update on Clock
 for each row
-execute procedure removeExpiredPromotion();
+execute procedure removeExpiredPromo();
 
 
 
 
 	 
+-- updates user's loyalty level
+create or replace function updateUserLoyalty()
+returns trigger as
+$$
+declare
+	purchaseCount real;
+	newLoyalty real;
+begin
+	-- get purchase count 
+	select count(customerID)
+	into purchaseCount
+	from Purchase
+	where customerID  = new.customerID;
+	-- update user loyalty 
+    IF (purchaseCount < 10)
+        Then
+            newLoyalty = 'basic';
+    END IF;
+	IF 10 <= purchaseCount AND purchaseCount < 20
+        Then
+            newLoyalty = 'bronze';
+    END IF;
+	IF 20 <= purchaseCount < 30
+        Then
+            newLoyalty = 'silver';
+    END IF;
+	IF 30 <= purchaseCount < 40
+        Then
+            newLoyalty = 'gold';
+    END IF;
+	IF 40 <= purchaseCount < 50
+        Then
+            newLoyalty = 'platinum';
+    END IF;
+	IF 50 <= purchaseCount
+        Then
+            newLoyalty = 'diamond';
+    END IF;
+
+
+
+
+
+
+	Update Customer
+	Set LoyaltyLevel = newLoyalty
+	Where customerID = new.customerID;
+
+end;
+
+$$ language plpgsql;
+
+
+drop trigger if exists newPurchase on Purchase;
+create trigger newPurchase
+after insert or update on Purchase
+for each row
+execute procedure updateUserLoyalty();
