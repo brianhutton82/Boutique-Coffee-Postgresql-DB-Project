@@ -116,4 +116,7 @@ after insert or update on Clock
 for each row
 execute procedure removeExpiredPromotion();
 
+
+
+
 	 
