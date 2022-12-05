@@ -1,4 +1,6 @@
 -- Brian Hutton
+-- Breanna Burns
+-- Uday Atragada
 
 -- when Clock is updated, check to see if customer should receive gift points
 -- on a customers birthday, the total number of points earned is increased by 10%
@@ -105,14 +107,14 @@ begin
 	into currTime
 	from Clock;
 	-- delete promotions with end date before time 
-	DELETE
-	FROM Promotion
+	DELETE FROM Promotion
 	WHERE promotionEndDate < currTime;
+
 	return new;
 end;
 $$ language plpgsql;
 
-drop trigger if exists clockUpdate on Clock
+drop trigger if exists clockUpdate on Clock;
 create trigger clockUpdate
 after insert or update on Clock
 for each row
