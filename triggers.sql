@@ -80,3 +80,29 @@ create trigger newPurchase
 after insert or update on Purchase
 for each row
 execute procedure updateCustomerOnPurchase();
+
+-- removes coupon when expired
+create or replace function removeExpiredPromo()
+return trigger as 
+$$
+declare
+	currTime real;
+begin
+	-- get time 
+	select p_date
+	into currTime
+	from Clock
+	-- delete promotions with end date before time 
+	delete from Promotion
+	where promotionEndDate < currTime;
+	return new;
+end;
+$$ langauge plpgsql;
+
+drop trigger if exists clockUpdate on Clock
+create trigger clockUpdate
+after insert or update on Clock
+for each row
+execute procedure removeExpiredPromotion();
+
+	 
