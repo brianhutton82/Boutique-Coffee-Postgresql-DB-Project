@@ -1,6 +1,5 @@
 -- Schema for CS1555 BoutiqueCoffee Project
 -- Brian Hutton
--- Uday Atragada
 
 drop table if exists Customer cascade;
 drop table if exists Store cascade;
@@ -31,6 +30,7 @@ check(value in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 create table LoyaltyLevel (
 	levelName loyalty_level default 'basic',
 	boostFactor real check(boostFactor >= 0),
+	numPurchases integer default 0,
 	constraint loyaltyPK primary key(levelName)
 );
 

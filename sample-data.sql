@@ -1,13 +1,11 @@
 -- Brian Hutton
 
-insert into LoyaltyLevel values('basic', 1);
-/*
-insert into LoyaltyLevel values('bronze',2);
-insert into LoyaltyLevel values('silver',3);
-insert into LoyaltyLevel values('gold',4);
-insert into LoyaltyLevel values('platinum',5);
-insert into LoyaltyLevel values('diamond', 6);
-*/
+insert into LoyaltyLevel values('basic', 1, 0);
+insert into LoyaltyLevel values('bronze',2, 10);
+insert into LoyaltyLevel values('silver',3, 20);
+insert into LoyaltyLevel values('gold',4, 30);
+insert into LoyaltyLevel values('platinum',5, 40);
+insert into LoyaltyLevel values('diamond', 6, 50);
 
 -- 20 customers
 -- updated Customer insert statements to include LoyaltyID
@@ -108,9 +106,6 @@ insert into Promotion values(6000, 'Half-off Latte', '2022-11-15', '2022-11-20')
 insert into Promotion values(6001, 'Free Cold brew', '2022-11-05', '2022-11-15');
 insert into Promotion values(6002, 'Free Turkish', '2022-12-05', '2022-12-10');
 
--- need to add to assumptions that birthDay & Month for customer will be of the form 'Mon' '00'
 insert into hasPromotion values(6000, 2001);
 insert into promotionFor values(6000, 1000);
 insert into offersCoffee values(1000, 2001);
-
--- need trigger to ensure purchasePortion == coffee price, if purchasePortion > 0
