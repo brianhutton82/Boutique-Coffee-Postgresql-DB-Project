@@ -1,4 +1,6 @@
 -- Brian Hutton
+-- Breanna Burns
+-- Uday Atragada
 
 insert into LoyaltyLevel values('basic', 1, 0);
 insert into LoyaltyLevel values('bronze',2, 10);

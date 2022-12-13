@@ -136,7 +136,7 @@ public class BCDriver {
 					int purchaseCustomerID = kbd.nextInt();
 					System.out.print("store number: ");
 					int purchaseStoreNumber = kbd.nextInt();
-					System.out.print("time of purchase (hh:mm:ss format): ");
+					System.out.print("time of purchase (mm-dd-yyyy format): ");
 					String purchaseTime = kbd.next();
 					System.out.print("coffee ID: ");
 					int purchaseCoffeeID = kbd.nextInt();

@@ -13,7 +13,7 @@ public class BoutiqueCoffee {
 	private Connection connection;
 	private Properties props;
 	private Statement st;
-	private String url = "jdbc:postgresql://localhost:5432/";
+	private String url;
 	private String username;
 	private String password;
 
@@ -23,6 +23,15 @@ public class BoutiqueCoffee {
 		username = kbd.next();
 		System.out.print("Enter password: ");
 		password = kbd.next();
+		System.out.print("url (enter 'localhost' if using locally): ");
+		String enteredURL = kbd.next();
+
+		if(enteredURL.equals("localhost")) {
+			url = "jdbc:postgresql://localhost:5432/";
+		} else {
+			url = enteredURL;
+		}
+		
 		try {
 			Class.forName("org.postgresql.Driver");
 			props = new Properties();

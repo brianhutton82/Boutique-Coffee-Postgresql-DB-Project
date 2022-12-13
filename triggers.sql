@@ -1,4 +1,6 @@
 -- Brian Hutton
+-- Breanna Burns
+-- Uday Atragada
 
 -- when Clock is updated, check to see if customer should receive gift points
 -- on a customers birthday, the total number of points earned is increased by 10%
@@ -105,14 +107,14 @@ begin
 	into currTime
 	from Clock;
 	-- delete promotions with end date before time 
-	DELETE
-	FROM Promotion
+	DELETE FROM Promotion
 	WHERE promotionEndDate < currTime;
+
 	return new;
 end;
 $$ language plpgsql;
 
-drop trigger if exists clockUpdate on Clock
+drop trigger if exists clockUpdate on Clock;
 create trigger clockUpdate
 after insert or update on Clock
 for each row
@@ -128,47 +130,34 @@ returns trigger as
 $$
 declare
 	purchaseCount real;
-	newLoyalty real;
+	newLoyalty varchar(10);
 begin
 	-- get purchase count 
 	select count(customerID)
 	into purchaseCount
 	from Purchase
 	where customerID  = new.customerID;
+
 	-- update user loyalty 
-    IF (purchaseCount < 10)
-        Then
-            newLoyalty = 'basic';
-    END IF;
-	IF 10 <= purchaseCount AND purchaseCount < 20
-        Then
-            newLoyalty = 'bronze';
-    END IF;
-	IF 20 <= purchaseCount < 30
-        Then
-            newLoyalty = 'silver';
-    END IF;
-	IF 30 <= purchaseCount < 40
-        Then
-            newLoyalty = 'gold';
-    END IF;
-	IF 40 <= purchaseCount < 50
-        Then
-            newLoyalty = 'platinum';
-    END IF;
-	IF 50 <= purchaseCount
-        Then
-            newLoyalty = 'diamond';
-    END IF;
-
-
-
-
-
+    if purchaseCount >= 10 and purchaseCount < 20 then
+            newLoyalty := 'bronze';
+	elsif purchaseCount >= 20 and purchaseCount < 30 then
+            newLoyalty := 'silver';
+	elsif purchaseCount >= 30 and purchaseCount < 40 then
+            newLoyalty := 'gold';
+	elsif purchaseCount >= 40 and purchaseCount < 50 then
+            newLoyalty := 'platinum';
+	elsif purchaseCount >= 50 then
+            newLoyalty := 'diamond';
+    else
+        newLoyalty := 'basic';
+    end if;
 
 	Update Customer
-	Set LoyaltyLevel = newLoyalty
+	Set loyaltyLevel = newLoyalty
 	Where customerID = new.customerID;
+
+	return new;
 
 end;
 

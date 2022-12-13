@@ -1,5 +1,7 @@
 -- Schema for CS1555 BoutiqueCoffee Project
 -- Brian Hutton
+-- Breanna Burns
+-- Uday Atragada
 
 drop table if exists Customer cascade;
 drop table if exists Store cascade;
