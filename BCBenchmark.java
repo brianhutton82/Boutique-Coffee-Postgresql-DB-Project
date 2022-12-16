@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.lang.StringBuilder;
 import java.lang.Math;
 import java.sql.*;
-import java.util.random.*;
+import java.util.Random;
+
+import javax.lang.model.util.ElementScanner6;
 
 
 public class BCBenchmark 
@@ -37,6 +39,8 @@ public class BCBenchmark
         }
         
         return sb.toString();
+        
+        
     }
     public static void main(String[] args)
     {
@@ -58,7 +62,7 @@ public class BCBenchmark
             {
                 for(int i = 0; i < times; i++)
                 {
-                    String storeName = getAlphaNumericString(10);
+                String storeName = getAlphaNumericString(10);
                 String storeType = getAlphaNumericString(10);
                 float gpsLat = (float) Math.random()*10+1;
                 float gpsLong = (float) Math.random()*10+1;
@@ -69,10 +73,10 @@ public class BCBenchmark
             {
                 for(int i = 0; i < times; i++)
                 {
-                    String coffeeName = getAlphaNumericString(10);
+                String coffeeName = getAlphaNumericString(10);
                 String description = getAlphaNumericString(10);
                 String countryOfOrigin = getAlphaNumericString(10);
-                int intensity = (int) Math.random()*5;
+                int intensity = (int) Math.random()*11 + 1;
                 float price = (float) Math.random()*5+1;
                 float rewardPoints = (float) Math.random()*10+1;
                 float redeemPoints = (float) Math.random()*10+1;
@@ -81,6 +85,7 @@ public class BCBenchmark
             }
             case "insertCustomer":
             {
+
                 for(int i = 0; i < times; i++)
                 {
                     String customerFirstName = getAlphaNumericString(10);
@@ -89,7 +94,8 @@ public class BCBenchmark
 					String birthDay = "10";
 					String birthMonth = "January";
 					String phoneNumber = "1234567890";
-					String phoneType = getAlphaNumericString(10);
+					String phoneType = "Home";
+
                     bc.addNewCustomer(customerFirstName, customerLastName, customerMiddleName, birthDay, birthMonth, phoneNumber, phoneType);
                 }
             }
@@ -102,7 +108,7 @@ public class BCBenchmark
 					String promotionStartDate = "1234-56-78";
 					String promotionEndDate = "9876-65-32";
 					int promoCoffeeID = (int) Math.random()*35;
-                        bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i)
+                        bc.schedulePromotion(promotionName, promotionStartDate, promotionName, promoCoffeeID);
                     }
             }
             case "addPromoToStore":
@@ -111,7 +117,6 @@ public class BCBenchmark
                     {
                         int promoID = (int) Math.random()*10;
 					    int storePromoID = (int) Math.random()*10;
-					    int promoCoffeeID = (int) Math.random()*10;
                         bc.addPromoToStore(promoID, storePromoID);
                     }
             }
@@ -139,7 +144,7 @@ public class BCBenchmark
                     float longitude = (float) Math.random()*50+100;
                     float latitude = (float) Math.random()*50+100;
                     int storePromoId = 0;
-                    bc.getClosestStores(latitude, i, storePromoId)
+                    bc.getClosestStores(latitude, i, storePromoId);
                 }
             }
             case "setLoyaltyLevel":
@@ -210,4 +215,5 @@ public class BCBenchmark
         }
     } while(!query.equals("quit"));
     }
+
 }
