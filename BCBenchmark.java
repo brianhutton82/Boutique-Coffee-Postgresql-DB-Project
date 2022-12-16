@@ -87,8 +87,8 @@ public class BCBenchmark
 					String customerLastName = getAlphaNumericString(10);
 					char customerMiddleName = getAlphaNumericString(1).charAt(0);
 					String birthDay = "10";
-					String birthMonth = "January";
-					String phoneNumber = "1234567890";
+					String birthMonth = "Jan";
+					String phoneNumber = "7610457547";
 					String phoneType = getAlphaNumericString(10);
                     bc.addNewCustomer(customerFirstName, customerLastName, customerMiddleName, birthDay, birthMonth, phoneNumber, phoneType);
                 }
@@ -99,10 +99,10 @@ public class BCBenchmark
                     {
 
                     String promotionName = getAlphaNumericString(10);
-					String promotionStartDate = "1234-56-78";
-					String promotionEndDate = "9876-65-32";
+					String promotionStartDate = "2021-06-07";
+					String promotionEndDate = "2022-05-32";
 					int promoCoffeeID = (int) Math.random()*35;
-                        bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i)
+                        bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i);
                     }
             }
             case "addPromoToStore":
@@ -139,7 +139,7 @@ public class BCBenchmark
                     float longitude = (float) Math.random()*50+100;
                     float latitude = (float) Math.random()*50+100;
                     int storePromoId = 0;
-                    bc.getClosestStores(latitude, i, storePromoId)
+                    bc.getClosestStores(latitude, i, storePromoId);
                 }
             }
             case "setLoyaltyLevel":
