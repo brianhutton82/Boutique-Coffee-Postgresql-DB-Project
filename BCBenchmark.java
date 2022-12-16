@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.lang.StringBuilder;
 import java.lang.Math;
 import java.sql.*;
-import java.util.random.*;
+import java.util.Random;
+
+import javax.lang.model.util.ElementScanner6;
 
 
 public class BCBenchmark 
@@ -37,6 +39,8 @@ public class BCBenchmark
         }
         
         return sb.toString();
+        
+        
     }
     public static void main(String[] args)
     {
@@ -58,8 +62,8 @@ public class BCBenchmark
             {
                 for(int i = 0; i < times; i++)
                 {
-                    String storeName = getAlphaNumericString(10);
-                String storeType = getAlphaNumericString(10);
+                String storeName = getAlphaNumericString(10);
+                String storeType = "sitting";
                 float gpsLat = (float) Math.random()*10+1;
                 float gpsLong = (float) Math.random()*10+1;
                     bc.addNewStore(storeName, storeType, gpsLat, gpsLong);
@@ -69,10 +73,10 @@ public class BCBenchmark
             {
                 for(int i = 0; i < times; i++)
                 {
-                    String coffeeName = getAlphaNumericString(10);
+                String coffeeName = getAlphaNumericString(10);
                 String description = getAlphaNumericString(10);
                 String countryOfOrigin = getAlphaNumericString(10);
-                int intensity = (int) Math.random()*5;
+                int intensity = (int) Math.random()*11 + 1;
                 float price = (float) Math.random()*5+1;
                 float rewardPoints = (float) Math.random()*10+1;
                 float redeemPoints = (float) Math.random()*10+1;
@@ -81,6 +85,7 @@ public class BCBenchmark
             }
             case "insertCustomer":
             {
+
                 for(int i = 0; i < times; i++)
                 {
                     String customerFirstName = getAlphaNumericString(10);
@@ -88,8 +93,14 @@ public class BCBenchmark
 					char customerMiddleName = getAlphaNumericString(1).charAt(0);
 					String birthDay = "10";
 					String birthMonth = "Jan";
+<<<<<<< HEAD
 					String phoneNumber = "7610457547";
 					String phoneType = getAlphaNumericString(10);
+=======
+					String phoneNumber = "1234567890";
+					String phoneType = "Home";
+
+>>>>>>> 1302765c7b5cf09f6bdac2a0f8437cad5bf903ed
                     bc.addNewCustomer(customerFirstName, customerLastName, customerMiddleName, birthDay, birthMonth, phoneNumber, phoneType);
                 }
             }
@@ -102,7 +113,11 @@ public class BCBenchmark
 					String promotionStartDate = "2021-06-07";
 					String promotionEndDate = "2022-05-32";
 					int promoCoffeeID = (int) Math.random()*35;
+<<<<<<< HEAD
                         bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i);
+=======
+                        bc.schedulePromotion(promotionName, promotionStartDate, promotionName, promoCoffeeID);
+>>>>>>> 1302765c7b5cf09f6bdac2a0f8437cad5bf903ed
                     }
             }
             case "addPromoToStore":
@@ -111,7 +126,6 @@ public class BCBenchmark
                     {
                         int promoID = (int) Math.random()*10;
 					    int storePromoID = (int) Math.random()*10;
-					    int promoCoffeeID = (int) Math.random()*10;
                         bc.addPromoToStore(promoID, storePromoID);
                     }
             }
@@ -210,4 +224,5 @@ public class BCBenchmark
         }
     } while(!query.equals("quit"));
     }
+
 }
