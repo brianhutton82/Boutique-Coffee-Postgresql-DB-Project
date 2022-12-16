@@ -146,10 +146,10 @@ public class BCBenchmark
             {
                 for(int i = 0; i < times; i++)
                 {
-                    float longitude = (float) Math.random()*50+100;
-                    float latitude = (float) Math.random()*50+100;
+                    float longitude = 50;
+                    float latitude = 100;
                     int storePromoId = 0;
-                    bc.getClosestStores(latitude, i, storePromoId);
+                    bc.getClosestStores(latitude, longitude, storePromoId);
                 }
             }
             case "setLoyaltyLevel":
