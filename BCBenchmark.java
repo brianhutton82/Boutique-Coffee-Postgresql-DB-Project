@@ -63,7 +63,7 @@ public class BCBenchmark
                 for(int i = 0; i < times; i++)
                 {
                 String storeName = getAlphaNumericString(10);
-                String storeType = getAlphaNumericString(10);
+                String storeType = "sitting";
                 float gpsLat = (float) Math.random()*10+1;
                 float gpsLong = (float) Math.random()*10+1;
                     bc.addNewStore(storeName, storeType, gpsLat, gpsLong);
@@ -92,7 +92,7 @@ public class BCBenchmark
 					String customerLastName = getAlphaNumericString(10);
 					char customerMiddleName = getAlphaNumericString(1).charAt(0);
 					String birthDay = "10";
-					String birthMonth = "January";
+					String birthMonth = "Jan";
 					String phoneNumber = "1234567890";
 					String phoneType = "Home";
 
