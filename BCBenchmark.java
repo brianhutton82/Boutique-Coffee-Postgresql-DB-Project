@@ -110,7 +110,7 @@ public class BCBenchmark
                     String promotionName = getAlphaNumericString(10);
 					String promotionStartDate = "2021-06-07";
 					String promotionEndDate = "2022-05-32";
-					int promoCoffeeID = (int) Math.random()*35;
+					int promoCoffeeID = (int) Math.random()*200000;
                         bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i);
                         bc.schedulePromotion(promotionName, promotionStartDate, promotionName, promoCoffeeID);
 
