@@ -93,14 +93,12 @@ public class BCBenchmark
 					char customerMiddleName = getAlphaNumericString(1).charAt(0);
 					String birthDay = "10";
 					String birthMonth = "Jan";
-<<<<<<< HEAD
 					String phoneNumber = "7610457547";
 					String phoneType = getAlphaNumericString(10);
-=======
-					String phoneNumber = "1234567890";
-					String phoneType = "Home";
+					phoneNumber = "1234567890";
+					phoneType = "Home";
 
->>>>>>> 1302765c7b5cf09f6bdac2a0f8437cad5bf903ed
+
                     bc.addNewCustomer(customerFirstName, customerLastName, customerMiddleName, birthDay, birthMonth, phoneNumber, phoneType);
                 }
             }
@@ -113,11 +111,9 @@ public class BCBenchmark
 					String promotionStartDate = "2021-06-07";
 					String promotionEndDate = "2022-05-32";
 					int promoCoffeeID = (int) Math.random()*35;
-<<<<<<< HEAD
                         bc.schedulePromotion(promotionName, promotionStartDate, promotionName, i);
-=======
                         bc.schedulePromotion(promotionName, promotionStartDate, promotionName, promoCoffeeID);
->>>>>>> 1302765c7b5cf09f6bdac2a0f8437cad5bf903ed
+
                     }
             }
             case "addPromoToStore":
